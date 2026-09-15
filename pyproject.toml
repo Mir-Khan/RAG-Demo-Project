@@ -1,0 +1,65 @@
+[project]
+name = "docqa"
+version = "0.1.0"
+description = "Documentation Q&A Assistant with Multi-Agent RAG"
+requires-python = ">=3.11,<3.14"
+dependencies = [
+    # --- Ingestion ---
+    "sentence-transformers>=3.0",   # bge-small embeddings + cross-encoder reranker
+    "httpx>=0.27",                  # download docs tarball (no git dependency)
+    "pyyaml>=6.0",                  # corpus config files
+    "markdown-it-py>=3.0",          # structured markdown parsing for the chunker
+    # --- Storage ---
+    "psycopg[binary]>=3.2",         # Postgres driver (v3, raw SQL — leaning into DB skills)
+    "pgvector>=0.3",                # adapts numpy vectors <-> pgvector type
+    # --- Config / CLI ---
+    "pydantic>=2.7",
+    "pydantic-settings>=2.3",       # typed env/.env loading
+    "rich>=13.7",                   # readable CLI output
+    "tqdm>=4.66",
+]
+
+[project.optional-dependencies]
+# NB: hybrid retrieval needs nothing beyond the base deps — sparse search is
+# Postgres full-text (already have psycopg), dense is pgvector, rerank is
+# sentence-transformers' CrossEncoder (already a base dep).
+agents = [
+    "langgraph>=0.2",            # graph orchestration (pulls langchain-core, no torch)
+    "google-genai>=0.8",        # default provider (Gemini free tier)
+    "groq>=0.11",               # alternative provider; both sit behind our own LLM protocol
+]
+eval = [
+    "ragas>=0.2,<0.3",           # metric API is isolated in docqa/eval/ragas_metrics.py
+    "datasets>=2.20",
+    "pandas>=2.2",
+    "langchain-ollama>=0.2",        # RAGAS judge when LLM_PROVIDER=ollama (recommended for eval)
+    "langchain-google-genai>=2.0",  # RAGAS judge when LLM_PROVIDER=gemini
+    "langchain-groq>=0.2",          # RAGAS judge when LLM_PROVIDER=groq
+    "langchain-huggingface>=0.1",   # local bge-small embeddings for answer_relevancy ($0)
+    "nest-asyncio>=1.6",         # RAGAS runs an event loop; play nice inside notebooks/CLI
+]
+app = [
+    "streamlit>=1.37",
+]
+dev = [
+    "pytest>=8.2",
+    "ruff>=0.5",
+]
+
+[project.scripts]
+docqa-ingest = "docqa.ingestion.pipeline:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/docqa"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]

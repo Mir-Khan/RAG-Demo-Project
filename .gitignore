@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+
+# Env / secrets
+.env
+.env.local
+
+# Data: cloned docs, model cache, local artifacts
+data/
+.cache/
+models/
+
+# Eval artifacts — keep the named runs the README cites as evidence, ignore
+# ad-hoc timestamped scratch runs
+evals/results/*.json
+!evals/results/baseline*.json
+!evals/results/holdout-final.json
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/
+
+# Claude Code project config (agent definitions, local settings) — dev tooling,
+# not part of the shipped project
+.claude/
