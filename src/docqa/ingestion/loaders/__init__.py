@@ -7,10 +7,12 @@ from docqa.config import LoaderConfig
 from docqa.ingestion.loaders.base import RawDoc, SourceLoader
 from docqa.ingestion.loaders.github_markdown import GithubMarkdownLoader
 from docqa.ingestion.loaders.markdown_dir import MarkdownDirLoader
+from docqa.ingestion.loaders.mediawiki import MediaWikiLoader
 
 _REGISTRY: dict[str, type] = {
     "github_markdown": GithubMarkdownLoader,
     "markdown_dir": MarkdownDirLoader,
+    "mediawiki": MediaWikiLoader,
 }
 
 __all__ = ["RawDoc", "SourceLoader", "build_loader"]

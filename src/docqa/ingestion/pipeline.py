@@ -26,11 +26,15 @@ def run(fresh: bool = False, limit: int | None = None, dry_run: bool = False) ->
     corpus = load_corpus_config(settings.corpus)
     console.rule(f"[bold]Ingest: {corpus.display_name or corpus.name}")
 
-    loader = build_loader(corpus.loader)
+    loaders = [build_loader(lc) for lc in corpus.loaders]
     counter = default_token_counter(settings.embedding_model)
     console.print(f"token counter: [cyan]{type(counter).__name__}[/]")
 
-    docs = list(loader.load())
+    docs = []
+    for lc, loader in zip(corpus.loaders, loaders, strict=True):
+        batch = list(loader.load())
+        console.print(f"  [dim]{lc.type}[/]: {len(batch)} docs")
+        docs.extend(batch)
     if limit:
         docs = docs[:limit]
     console.print(f"loaded [green]{len(docs)}[/] source docs")

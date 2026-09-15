@@ -3,29 +3,29 @@
 name: fastapi
 display_name: "FastAPI Documentation"
 
-loader:
-  type: github_markdown          # -> docqa.ingestion.loaders.registry
-  repo: fastapi/fastapi
-  ref: "0.115.6"                 # pin a tag so re-ingests are reproducible
-  include_globs:
-    - "docs/en/docs/**/*.md"
-  exclude_globs:
-    - "docs/en/docs/reference/**"      # mkdocstrings API stubs: almost no prose, hurts retrieval
-    - "**/release-notes.md"
-    # community / project-meta pages — not "how do I use FastAPI" content, pure retrieval noise
-    - "docs/en/docs/contributing.md"
-    - "docs/en/docs/management*.md"
-    - "docs/en/docs/fastapi-people.md"
-    - "docs/en/docs/help-fastapi.md"
-    - "docs/en/docs/newsletter.md"
-    - "docs/en/docs/resources.md"
-    - "docs/en/docs/external-links.md"
-    - "docs/en/docs/benchmarks.md"
-    - "docs/en/docs/about/**"
-    - "docs/en/docs/learn/**"
-  # path -> public URL mapping, so retrieved chunks can link back to the real docs
-  url_base: "https://fastapi.tiangolo.com/"
-  strip_path_prefix: "docs/en/docs/"
+loaders:
+  - type: github_markdown          # -> docqa.ingestion.loaders.registry
+    repo: fastapi/fastapi
+    ref: "0.115.6"                 # pin a tag so re-ingests are reproducible
+    include_globs:
+      - "docs/en/docs/**/*.md"
+    exclude_globs:
+      - "docs/en/docs/reference/**"      # mkdocstrings API stubs: almost no prose, hurts retrieval
+      - "**/release-notes.md"
+      # community / project-meta pages — not "how do I use FastAPI" content, pure retrieval noise
+      - "docs/en/docs/contributing.md"
+      - "docs/en/docs/management*.md"
+      - "docs/en/docs/fastapi-people.md"
+      - "docs/en/docs/help-fastapi.md"
+      - "docs/en/docs/newsletter.md"
+      - "docs/en/docs/resources.md"
+      - "docs/en/docs/external-links.md"
+      - "docs/en/docs/benchmarks.md"
+      - "docs/en/docs/about/**"
+      - "docs/en/docs/learn/**"
+    # path -> public URL mapping, so retrieved chunks can link back to the real docs
+    url_base: "https://fastapi.tiangolo.com/"
+    strip_path_prefix: "docs/en/docs/"
 
 chunking:
   # iter-1 (was 450/64): smaller units so one page can't dominate the top-k on

@@ -1,13 +1,44 @@
-# Demo corpus proving the ingestion seam is real: same pipeline, different loader,
-# no code changes. Router categories are corpus-specific — note there's no
-# "api_reference" here.
+# Second proof that the ingestion seam is real: this corpus blends TWO source
+# types for one knowledge base — a live wiki (general game/mechanics coverage,
+# "all the games") and a hand-curated directory (current competitive strategy,
+# which is too new to have a mature wiki page yet). Nothing outside this file
+# and the loader registry knows or cares that two different mechanisms fetched
+# these docs; chunking, embedding, retrieval, agents, and eval are unchanged.
 name: pokemon
-display_name: "Pokémon Field Notes (demo)"
+display_name: "Pokémon (games + competitive)"
 
-loader:
-  type: markdown_dir
-  path: examples/pokemon
-  url_base: ""            # local notes have no public URL; loader falls back to file://
+loaders:
+  # General coverage across the mainline games: mechanics, systems, terms that
+  # apply regardless of generation. Curated page list, not a site crawl — this
+  # is a demo corpus, not an attempt to mirror all of Bulbapedia.
+  - type: mediawiki
+    api_base: "https://bulbapedia.bulbagarden.net/w/api.php"
+    url_base: "https://bulbapedia.bulbagarden.net/wiki/"
+    pages:
+      - "Pokémon"
+      - "Type"
+      - "Ability"
+      - "Nature"
+      - "Effort values"
+      - "Individual values"
+      - "Experience"
+      - "Evolution"
+      - "Held item"
+      - "Status condition"
+      - "Critical hit"
+      - "Terastallization"
+      - "Mega Evolution"
+      - "Double Battle"
+      - "Generation"
+      - "Pokémon Champions"
+
+  # Current competitive strategy (Regulation Set M-C) -- hand-curated because
+  # the format is brand new; no wiki has mature write-ups for it yet. Facts
+  # sourced from the official regulation announcement, MetaVGC, and Pikalytics
+  # usage stats -- see the notes' own "Sources" sections.
+  - type: markdown_dir
+    path: examples/pokemon
+    url_base: ""            # local notes have no public URL; loader falls back to file://
 
 chunking:
   max_tokens: 450
@@ -16,12 +47,12 @@ chunking:
   prepend_breadcrumb: true
 
 retrieval:
-  dense_k: 20
-  sparse_k: 20
+  dense_k: 30
+  sparse_k: 30
   rrf_k: 60
   rerank: true
-  rerank_top_n: 12
-  final_k: 4
+  rerank_top_n: 20
+  final_k: 6
 
 router_categories:
   - id: lore
@@ -32,16 +63,22 @@ router_categories:
     answer_style: "Tell it as a short narrative. Stay within what the sources establish."
     temperature: 0.4
   - id: game_mechanics
-    description: "How a mechanic works: type matchups, stats, evolution triggers, status effects."
+    description: "How a mechanic works: types, abilities, natures, EVs/IVs, evolution, status effects."
     examples:
       - "How does the burn status affect a Pokémon?"
-      - "What triggers Eevee's evolution into Espeon?"
+      - "What is Terastallization and how does it work?"
     answer_style: "Give exact numbers and conditions from the sources. Be precise, not flavourful."
     temperature: 0.0
   - id: competitive
-    description: "Battle strategy, team building, movesets, tier placement."
+    description: "Regulation Set M-C format rules, usage trends, team archetypes, held items."
     examples:
-      - "Is Dragonite viable in singles?"
-      - "What's a good moveset for defensive Toxapex?"
-    answer_style: "Be direct and opinionated, but only as far as the sources support."
-    temperature: 0.2
+      - "What are the format rules for Regulation Set M-C?"
+      - "What's a strong core to build around right now?"
+    answer_style: >
+      Be direct and specific -- cite real usage numbers and named Pokémon/items when the
+      sources give them, not vague generalities. Note that usage trends are a snapshot,
+      not a permanent tier list.
+    temperature: 0.1
+
+demo_negative_examples:
+  - "What are the format rules for Regulation Set N?"

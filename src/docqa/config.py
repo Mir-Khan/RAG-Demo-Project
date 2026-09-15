@@ -75,6 +75,10 @@ class LoaderConfig(BaseModel):
     # markdown_dir
     path: str | None = None
 
+    # mediawiki
+    api_base: str | None = None
+    pages: list[str] = Field(default_factory=list)
+
 
 class ChunkingConfig(BaseModel):
     max_tokens: int = 450       # bge-small truncates at 512; leave room for the breadcrumb
@@ -108,7 +112,11 @@ class RouterCategory(BaseModel):
 class CorpusConfig(BaseModel):
     name: str
     display_name: str = ""
-    loader: LoaderConfig
+    # a list, not one loader: a corpus can blend sources (e.g. a wiki for general
+    # coverage + a hand-curated dir for something too new/niche to have a mature
+    # source yet). Ingestion runs each in turn and concatenates their RawDocs;
+    # nothing downstream of loading knows or cares how many there were.
+    loaders: list[LoaderConfig]
     chunking: ChunkingConfig = Field(default_factory=ChunkingConfig)
     retrieval: RetrievalConfig = Field(default_factory=RetrievalConfig)
     router_categories: list[RouterCategory] = Field(default_factory=list)

@@ -12,8 +12,11 @@ demonstrate senior-level retrieval architecture rather than a tutorial pipeline.
   set, with baseline-vs-tuned deltas committed under `evals/results/`.
 - **$0 to run**: local `bge-small` embeddings + reranker, Gemini free-tier LLM (Groq / local Ollama
   swappable via one env var), Postgres in Docker or a managed free tier.
-- **Corpus-agnostic ingestion**: FastAPI is the evaluated corpus; `examples/pokemon/` shows the same
-  pipeline over a hand-authored knowledge base via one config file.
+- **Corpus-agnostic ingestion**: FastAPI is the evaluated corpus. A second demo corpus — Pokémon
+  games + the current competitive format — proves the loader seam two ways at once: a live
+  MediaWiki source (Bulbapedia, via its public API) blended with a hand-curated directory for
+  content too new to have a mature wiki page, both feeding one corpus with zero changes to
+  chunking, retrieval, agents, or eval. `CORPUS=pokemon` after ingesting it.
 
 > **Every architectural decision — with the alternatives considered and the trade-off accepted — is
 > written up in [`docs/architecture.md`](docs/architecture.md).** That doc is the main artifact.
@@ -40,7 +43,7 @@ config/corpora/*.yaml     one file per knowledge base — loader, chunk budgets,
 src/docqa/
   config.py               env settings + corpus-config loading
   ingestion/
-    loaders/               SourceLoader protocol + github_markdown / markdown_dir + registry
+    loaders/               SourceLoader protocol + github_markdown / markdown_dir / mediawiki + registry
     chunker.py             markdown -> heading-stack sections -> token-budgeted chunks
     embed.py               bge-small wrapper (query-prefix, L2-normalise)
     pipeline.py            config -> load -> chunk -> embed -> upsert   (python -m docqa.ingestion.pipeline)
@@ -76,7 +79,7 @@ evals/
   README.md                composition, leakage guard, metric definitions
   results/                 baseline-v1.json + holdout-final.json committed; other runs gitignored
 docs/architecture.md      decision rationale — the thing to read
-examples/pokemon/         demo corpus for the pluggable loader
+examples/pokemon/         second demo corpus: Bulbapedia (mediawiki loader) + curated competitive notes
 ```
 
 ---
