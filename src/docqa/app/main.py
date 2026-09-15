@@ -14,7 +14,21 @@ import logging
 import streamlit as st
 
 from docqa.app.components import score_chips, source_status, truncate
-from docqa.config import CORPORA_DIR, get_settings, load_corpus_config
+from docqa.config import CORPORA_DIR, REPO_ROOT, get_settings, load_corpus_config
+
+_AVATAR_DIR = REPO_ROOT / "assets" / "avatars" / "pokemon"
+_AVATAR_EXTS = (".png", ".jpg", ".jpeg", ".webp")
+
+
+def _fan_art(name: str) -> str | None:
+    """Path to assets/avatars/pokemon/<name>.<ext> if someone's dropped one in,
+    else None — the caller falls back to an emoji. Never raises: an empty or
+    missing folder is the expected default state, not an error."""
+    for ext in _AVATAR_EXTS:
+        path = _AVATAR_DIR / f"{name}{ext}"
+        if path.is_file():
+            return str(path)
+    return None
 
 # Fly (and most container platforms) capture stdout as the app's logs — this is
 # the only record of what actually happened once a session's browser tab is
@@ -59,7 +73,13 @@ _DEFAULT_STYLE = {"sidebar_icon": "📘", "assistant_avatar": "🤖", "user_avat
 
 
 def _style_for(corpus: str) -> dict:
-    return _CORPUS_STYLE.get(corpus, _DEFAULT_STYLE)
+    style = dict(_CORPUS_STYLE.get(corpus, _DEFAULT_STYLE))
+    if corpus == "pokemon":
+        # fan-art avatars override the emoji defaults the moment they exist —
+        # see assets/avatars/pokemon/README.md
+        style["assistant_avatar"] = _fan_art("assistant") or style["assistant_avatar"]
+        style["user_avatar"] = _fan_art("user") or style["user_avatar"]
+    return style
 
 
 @st.cache_resource(show_spinner="Loading embedder…")
@@ -182,6 +202,12 @@ with st.sidebar:
     corpus = st.selectbox("Corpus", _corpus_names())
     style = _style_for(corpus)
     st.title(f"{style['sidebar_icon']} Docs Q&A")
+    if corpus == "pokemon":
+        st.caption(
+            "Fan-made demo project — not affiliated with, endorsed by, or sponsored by "
+            "Nintendo, Game Freak, Creatures Inc., or The Pokémon Company. Pokémon is a "
+            "trademark of Nintendo."
+        )
     cfg = load_corpus_config(corpus)
     settings = get_settings()
     st.caption(f"LLM · `{settings.llm_provider}` · `{settings.llm_model}`")
