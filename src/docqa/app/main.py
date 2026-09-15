@@ -27,12 +27,70 @@ logger = logging.getLogger("docqa.app")
 
 st.set_page_config(page_title="Docs Q&A", page_icon="📘", layout="centered")
 
+# Base polish applied regardless of corpus: tighter expander/divider spacing,
+# slightly rounder buttons, a bit more breathing room around the chat log.
+_BASE_CSS = """
+<style>
+  .block-container { padding-top: 2.5rem; max-width: 780px; }
+  .stButton > button { border-radius: 8px; }
+  div[data-testid="stExpander"] { border-radius: 10px; }
+  div[data-testid="stChatMessage"] { padding-bottom: 0.15rem; }
+</style>
+"""
 
-@st.cache_resource(show_spinner="Loading embedder + reranker…")
+# Streamlit's theme file (.streamlit/config.toml) sets the FastAPI-tuned default
+# — clean, minimal, calm blue — and can't change per session. This overrides just
+# the accent color + button/link styling at runtime for a livelier feel when the
+# Pokémon corpus is picked, without touching the base theme file.
+_POKEMON_CSS = """
+<style>
+  :root { --primary-color: #EE1515; }
+  .stButton > button[kind="secondary"] { border: 1px solid #EE1515; }
+  a { color: #FFCB05 !important; }
+  .stButton > button:hover { border-color: #EE1515; color: #EE1515; }
+</style>
+"""
+
+_CORPUS_STYLE = {
+    "fastapi": {"sidebar_icon": "📘", "assistant_avatar": "📘", "user_avatar": "🧑‍💻"},
+    "pokemon": {"sidebar_icon": "⚡", "assistant_avatar": "⚡", "user_avatar": "🎮"},
+}
+_DEFAULT_STYLE = {"sidebar_icon": "📘", "assistant_avatar": "🤖", "user_avatar": "🧑"}
+
+
+def _style_for(corpus: str) -> dict:
+    return _CORPUS_STYLE.get(corpus, _DEFAULT_STYLE)
+
+
+@st.cache_resource(show_spinner="Loading embedder…")
+def _embedder():
+    from docqa.ingestion.embed import Embedder
+
+    settings = get_settings()
+    return Embedder(
+        settings.embedding_model,
+        query_prefix=settings.embedding_query_prefix,
+        expected_dim=settings.embedding_dim,
+    )
+
+
+@st.cache_resource(show_spinner="Loading reranker…")
+def _reranker():
+    from docqa.retrieval.rerank import Reranker
+
+    return Reranker(get_settings().reranker_model)
+
+
+@st.cache_resource(show_spinner="Connecting…")
 def _pipeline(corpus: str):
     from docqa.agents.graph import QAPipeline
+    from docqa.retrieval.retriever import Retriever
 
-    return QAPipeline(corpus=corpus)
+    # bge-small and the reranker are the same weights regardless of corpus --
+    # share one copy across corpus switches instead of loading a second set
+    # into memory the moment someone tries both in one session.
+    retriever = Retriever(corpus, embedder=_embedder(), reranker=_reranker())
+    return QAPipeline(corpus=corpus, retriever=retriever)
 
 
 def _corpus_names() -> list[str]:
@@ -118,9 +176,12 @@ def _handle(question: str, corpus: str) -> None:
 # --------------------------------------------------------------------------- #
 # sidebar                                                                      #
 # --------------------------------------------------------------------------- #
+st.markdown(_BASE_CSS, unsafe_allow_html=True)
+
 with st.sidebar:
-    st.title("📘 Docs Q&A")
     corpus = st.selectbox("Corpus", _corpus_names())
+    style = _style_for(corpus)
+    st.title(f"{style['sidebar_icon']} Docs Q&A")
     cfg = load_corpus_config(corpus)
     settings = get_settings()
     st.caption(f"LLM · `{settings.llm_provider}` · `{settings.llm_model}`")
@@ -130,13 +191,17 @@ with st.sidebar:
         st.session_state.history = []
         st.rerun()
 
+if corpus == "pokemon":
+    st.markdown(_POKEMON_CSS, unsafe_allow_html=True)
+
 st.session_state.setdefault("history", [])
 
 # --------------------------------------------------------------------------- #
 # transcript                                                                   #
 # --------------------------------------------------------------------------- #
 for turn in st.session_state.history:
-    with st.chat_message(turn["role"]):
+    avatar = style["user_avatar"] if turn["role"] == "user" else style["assistant_avatar"]
+    with st.chat_message(turn["role"], avatar=avatar):
         st.markdown(turn["content"])
         if turn.get("result") is not None:
             _render_meta(turn["result"])

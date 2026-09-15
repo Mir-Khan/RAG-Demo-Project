@@ -1,0 +1,13 @@
+# Base theme: clean and minimal, tuned for the FastAPI corpus. The Pokémon
+# corpus layers a warmer accent on top of this at runtime (see app/main.py) --
+# Streamlit's theme file itself can't change per-session, only per-restart.
+[theme]
+base = "dark"
+primaryColor = "#4F8EF7"
+backgroundColor = "#0E1117"
+secondaryBackgroundColor = "#161B22"
+textColor = "#E6E6E6"
+font = "sans serif"
+
+[client]
+toolbarMode = "minimal"
