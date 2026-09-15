@@ -1,0 +1,47 @@
+# Demo corpus proving the ingestion seam is real: same pipeline, different loader,
+# no code changes. Router categories are corpus-specific — note there's no
+# "api_reference" here.
+name: pokemon
+display_name: "Pokémon Field Notes (demo)"
+
+loader:
+  type: markdown_dir
+  path: examples/pokemon
+  url_base: ""            # local notes have no public URL; loader falls back to file://
+
+chunking:
+  max_tokens: 450
+  min_tokens: 48
+  overlap_tokens: 60
+  prepend_breadcrumb: true
+
+retrieval:
+  dense_k: 20
+  sparse_k: 20
+  rrf_k: 60
+  rerank: true
+  rerank_top_n: 12
+  final_k: 4
+
+router_categories:
+  - id: lore
+    description: "Story, world, character, and Pokédex-flavour questions."
+    examples:
+      - "What is the origin of Mewtwo?"
+      - "Which region is Pikachu native to?"
+    answer_style: "Tell it as a short narrative. Stay within what the sources establish."
+    temperature: 0.4
+  - id: game_mechanics
+    description: "How a mechanic works: type matchups, stats, evolution triggers, status effects."
+    examples:
+      - "How does the burn status affect a Pokémon?"
+      - "What triggers Eevee's evolution into Espeon?"
+    answer_style: "Give exact numbers and conditions from the sources. Be precise, not flavourful."
+    temperature: 0.0
+  - id: competitive
+    description: "Battle strategy, team building, movesets, tier placement."
+    examples:
+      - "Is Dragonite viable in singles?"
+      - "What's a good moveset for defensive Toxapex?"
+    answer_style: "Be direct and opinionated, but only as far as the sources support."
+    temperature: 0.2

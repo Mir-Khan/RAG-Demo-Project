@@ -1,0 +1,97 @@
+# Everything corpus-specific lives here. The pipeline, retrieval, agents, UI and
+# eval code never hardcode "fastapi" — they read this file by name ($CORPUS).
+name: fastapi
+display_name: "FastAPI Documentation"
+
+loader:
+  type: github_markdown          # -> docqa.ingestion.loaders.registry
+  repo: fastapi/fastapi
+  ref: "0.115.6"                 # pin a tag so re-ingests are reproducible
+  include_globs:
+    - "docs/en/docs/**/*.md"
+  exclude_globs:
+    - "docs/en/docs/reference/**"      # mkdocstrings API stubs: almost no prose, hurts retrieval
+    - "**/release-notes.md"
+    # community / project-meta pages — not "how do I use FastAPI" content, pure retrieval noise
+    - "docs/en/docs/contributing.md"
+    - "docs/en/docs/management*.md"
+    - "docs/en/docs/fastapi-people.md"
+    - "docs/en/docs/help-fastapi.md"
+    - "docs/en/docs/newsletter.md"
+    - "docs/en/docs/resources.md"
+    - "docs/en/docs/external-links.md"
+    - "docs/en/docs/benchmarks.md"
+    - "docs/en/docs/about/**"
+    - "docs/en/docs/learn/**"
+  # path -> public URL mapping, so retrieved chunks can link back to the real docs
+  url_base: "https://fastapi.tiangolo.com/"
+  strip_path_prefix: "docs/en/docs/"
+
+chunking:
+  # iter-1 (was 450/64): smaller units so one page can't dominate the top-k on
+  # multi-hop questions. A section is also merged into its parent when its *prose*
+  # (code fences stripped) is under min_tokens — kills `## Recap` / "Run the App"
+  # stubs that are mostly a code block and embed poorly against NL questions.
+  max_tokens: 300
+  min_tokens: 80
+  overlap_tokens: 60            # only applies when a single section must be split
+  prepend_breadcrumb: true      # embed "FastAPI > Tutorial > Query Parameters\n\n<text>"
+
+# Hybrid retrieval knobs — what the eval harness tunes. See docs/architecture.md and
+# evals/README.md for the baseline-vs-tuned table.
+retrieval:
+  # iter-1 (was 30/30/20/6): wider candidate pool + wider rerank window so a
+  # second relevant page that sat at fused-rank ~22 still gets a chance; more
+  # chunks to the LLM to cover multi-page answers (context is token-capped anyway).
+  dense_k: 40                   # vector-search candidates
+  sparse_k: 40                  # full-text-search candidates
+  rrf_k: 60                     # Reciprocal Rank Fusion constant
+  rerank: true
+  rerank_top_n: 30              # fused candidates the cross-encoder scores
+  final_k: 8                    # chunks passed to the LLM
+
+# The router agent classifies each question into one of these. Corpus-specific by design:
+# a Pokemon corpus would not have "api_reference".
+router_categories:
+  - id: api_reference
+    description: "Questions about a specific class, function, parameter, or decorator signature and its exact behaviour."
+    examples:
+      - "What parameters does Query() accept?"
+      - "What's the difference between Depends and Security?"
+    answer_style: >
+      Quote exact class/function names, parameter names, and types verbatim from the sources.
+      Prefer a short code snippet over prose. Never paraphrase an API name.
+    temperature: 0.0
+  - id: conceptual
+    description: "How/why questions about a FastAPI concept or design idea."
+    examples:
+      - "How does dependency injection work in FastAPI?"
+      - "Why use async def for path operations?"
+    answer_style: >
+      Explain the idea and the reasoning behind it. Synthesise across sources rather than
+      quoting one. A short illustrative example helps.
+    temperature: 0.1
+  - id: troubleshooting
+    description: "An error, unexpected behaviour, or 'why doesn't X work' situation."
+    examples:
+      # CORS first: it's the UI's one-click example for this category (see
+      # demo_negative_examples below), so it should be a question that reliably
+      # succeeds. "422 Unprocessable Entity" is still here as router few-shot
+      # variety — the docs never state that phrase, so it's a *correct refusal*,
+      # not a good "look, it works" button.
+      - "My CORS requests are being blocked, what do I configure?"
+      - "Why am I getting a 422 Unprocessable Entity?"
+    answer_style: >
+      State the most likely cause first, then give the fix as concrete numbered steps.
+      Name what triggers the error. If the sources don't cover the exact symptom, say so.
+    temperature: 0.0
+
+# Demo-only: questions the docs genuinely don't answer, shown in the UI as a
+# one-click "watch it correctly decline" example instead of something a visitor
+# has to stumble into. The first is the case iteration 1b specifically fixed —
+# it used to confabulate a "built-in user database" from the security tutorial;
+# now it says plainly that the feature doesn't exist. See docs/architecture.md
+# §3.10/§4 and evals/eval_set.jsonl (q25, q23) for how this was found.
+demo_negative_examples:
+  - "How do I enable FastAPI's built-in user account database?"
+  - "How do I configure per-API-key rate limiting in FastAPI?"
