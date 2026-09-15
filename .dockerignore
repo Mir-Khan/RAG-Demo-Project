@@ -1,0 +1,21 @@
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+.git/
+.github/
+
+# ingestion is offline/local, not part of the deployed image
+data/
+
+# secrets — the deployed platform's own secret store is used instead, never the image
+.env
+.env.local
+
+# dev-only, not needed by the running app
+tests/
+evals/results/
+
+*.md
+!README.md

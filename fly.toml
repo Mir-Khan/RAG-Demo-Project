@@ -1,0 +1,35 @@
+# Fly.io app config. `app` must be globally unique — rename before first deploy:
+#   sed -i 's/docqa-fastapi-rag/<your-unique-name>/' fly.toml
+app = "docqa-rag-2026-project"
+primary_region = "iad"          # pick the region nearest you; see `fly platform regions`
+
+[build]
+
+[env]
+  PORT = "8080"
+
+[http_service]
+  internal_port = 8080
+  force_https = true
+  # Scale-to-zero: this project's explicit constraint is $0, not max reliability.
+  # Trade-off, accepted on purpose: the first question after any idle gap pays a
+  # cold start (~20-40s — mostly the cross-encoder reranker on a shared vCPU, see
+  # docs/architecture.md §3.13) and, rarely, the machine can stop mid-session if it
+  # goes idle under an open browser tab (was briefly "fixed" with an always-on
+  # machine, which itself cost ~$11/mo continuously — reverted once the $0
+  # constraint was restated, because that trade was backwards for what this
+  # project is: a demo you spin up occasionally, not a production service).
+  auto_stop_machines = "stop"
+  auto_start_machines = true
+  min_machines_running = 0
+
+  [[http_service.checks]]
+    grace_period = "90s"        # model load on cold start
+    interval = "30s"
+    timeout = "5s"
+    method = "GET"
+    path = "/_stcore/health"
+
+[[vm]]
+  size = "shared-cpu-1x"
+  memory = "2gb"                 # bge-small + bge-reranker-base + torch need real headroom
