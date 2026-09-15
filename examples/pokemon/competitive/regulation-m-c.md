@@ -8,7 +8,7 @@ to December 2, 2026. It is the current competitive format.
 - **Battle format:** Double Battle, 4v4. Each trainer registers a Team List of
   6 legal Pokémon and selects 4 to bring into each match.
 - **Level:** every Pokémon is automatically adjusted to Level 50 for battle,
-  with stats recalculated accordingly — a Level 100 Pokémon and a Level 50
+  with stats recalculated accordingly: a Level 100 Pokémon and a Level 50
   Pokémon enter a match on equal footing.
 - **Species Clause:** a team cannot contain two Pokémon that share the same
   National Pokédex number. Regional variants (e.g. Galarian and standard
@@ -25,7 +25,7 @@ to December 2, 2026. It is the current competitive format.
 ## What's new in M-C
 
 M-C introduced 36 new Pokémon to the legal pool (regional forms, gender
-variants, and the Galar starters — Rillaboom, Cinderace, and Inteleon —
+variants, and the Galar starters, Rillaboom, Cinderace, and Inteleon,
 among them) and 6 new Mega Evolutions:
 
 - Mega Absol Z
@@ -42,5 +42,5 @@ immediately impactful additions to the competitive metagame.
 
 Regulation details from the official Pokémon Champions announcement and
 MetaVGC's regulation page; see the project README for links. This is a
-snapshot of the ruleset as of the format's release — treat the format dates
+snapshot of the ruleset as of the format's release; treat the format dates
 above as the source of truth if this ever needs re-verifying.
