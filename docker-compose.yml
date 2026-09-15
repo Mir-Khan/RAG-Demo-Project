@@ -4,6 +4,10 @@ services:
   db:
     image: pgvector/pgvector:pg16
     environment:
+      # Throwaway local-only credential, intentionally trivial: this container only
+      # ever binds to localhost on whoever's machine runs `docker compose up`, never
+      # reachable over a network, never holds anything but a disposable dev corpus.
+      # Not a real secret -- don't "fix" this by wiring in a production credential.
       POSTGRES_USER: docqa
       POSTGRES_PASSWORD: docqa
       POSTGRES_DB: docqa
