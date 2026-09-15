@@ -75,7 +75,7 @@ _DEFAULT_STYLE = {"sidebar_icon": "📘", "assistant_avatar": "🤖", "user_avat
 def _style_for(corpus: str) -> dict:
     style = dict(_CORPUS_STYLE.get(corpus, _DEFAULT_STYLE))
     if corpus == "pokemon":
-        # fan-art avatars override the emoji defaults the moment they exist —
+        # custom images override the emoji defaults the moment they exist —
         # see assets/avatars/pokemon/README.md
         style["assistant_avatar"] = _fan_art("assistant") or style["assistant_avatar"]
         style["user_avatar"] = _fan_art("user") or style["user_avatar"]

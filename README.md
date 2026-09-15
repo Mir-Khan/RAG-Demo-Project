@@ -25,9 +25,9 @@ What's in here:
   FastAPI's docs. It pulls from Bulbapedia's live API and blends in some notes I wrote myself, and
   none of the chunking/retrieval/agent/eval code had to change for it. `CORPUS=pokemon` to switch.
   (This is an unofficial fan project — not affiliated with, endorsed by, or sponsored by Nintendo,
-  Game Freak, Creatures Inc., or The Pokémon Company. Chat avatars, if you add any under
-  `assets/avatars/pokemon/`, should be fan art, not official game assets — see the README in that
-  folder for why.)
+  Game Freak, Creatures Inc., or The Pokémon Company. Chat avatars come from
+  `assets/avatars/pokemon/` if you drop images in — see the README in that folder for the
+  fan-art-vs-official-sprite trade-off and what's actually in there right now.)
 
 I wrote up the reasoning behind every real decision in [`docs/architecture.md`](docs/architecture.md)
 — what I considered instead and why I didn't go with it. That doc is honestly the main thing here;

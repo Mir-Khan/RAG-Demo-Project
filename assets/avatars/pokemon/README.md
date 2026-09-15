@@ -12,11 +12,13 @@ plenty; there's no reason for these to be large files.
 If neither file is present, the app falls back to plain emoji avatars, so this folder can stay
 empty.
 
-## Use fan art / your own art only
+## On the current images
 
-Not official sprites or artwork pulled from the games, Bulbapedia, Serebii, or similar — see
-`docs/architecture.md`'s note on this and the in-app disclaimer for why. This corpus is already a
-non-affiliated fan project by nature (it's a RAG demo *about* Pokémon, not a Pokémon product), and
-using someone else's copyrighted art assets isn't something a "not affiliated" disclaimer fixes —
-it only addresses trademark/endorsement confusion, not copyright. If the art isn't yours, credit the
-artist by adding a line to this file.
+`assistant.jpg` / `user.png` are official game sprites (a Professor overworld sprite and a pixel-art
+crop of the Trainer Red sprite), not fan art — the search for suitable fan art didn't turn up
+anything usable in time. That's a conscious trade-off, made with the actual distinction in mind: the
+in-app "not affiliated" disclaimer covers trademark/endorsement confusion, but it doesn't grant
+copyright permission to use someone else's art. Accepted here as low risk for a small,
+non-commercial, low-traffic portfolio demo — not a claim that it's risk-free. If this ever needs to
+be tightened up (wider distribution, anything commercial), swap these for genuine fan art or
+original art first.
