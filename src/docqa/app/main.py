@@ -202,12 +202,6 @@ with st.sidebar:
     corpus = st.selectbox("Corpus", _corpus_names())
     style = _style_for(corpus)
     st.title(f"{style['sidebar_icon']} Docs Q&A")
-    if corpus == "pokemon":
-        st.caption(
-            "Fan-made demo project — not affiliated with, endorsed by, or sponsored by "
-            "Nintendo, Game Freak, Creatures Inc., or The Pokémon Company. Pokémon is a "
-            "trademark of Nintendo."
-        )
     cfg = load_corpus_config(corpus)
     settings = get_settings()
     st.caption(f"LLM · `{settings.llm_provider}` · `{settings.llm_model}`")
@@ -219,6 +213,14 @@ with st.sidebar:
 
 if corpus == "pokemon":
     st.markdown(_POKEMON_CSS, unsafe_allow_html=True)
+    # Top of the main viewport, not tucked in the sidebar — this should be hard
+    # to miss regardless of screen size or whether the sidebar's collapsed.
+    st.info(
+        "⚡ **Fan-made demo — not affiliated with, endorsed by, or sponsored by Nintendo, "
+        "Game Freak, Creatures Inc., or The Pokémon Company.** Pokémon is a trademark of "
+        "Nintendo. This corpus exists to demonstrate the RAG pipeline, not as a Pokémon product.",
+        icon="⚠️",
+    )
 
 st.session_state.setdefault("history", [])
 
