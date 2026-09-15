@@ -1,0 +1,342 @@
+{
+  "timestamp": "2026-09-11T01:57:50.336341+00:00",
+  "split": "holdout",
+  "n_items": 8,
+  "wall_seconds": 62.5,
+  "config": {
+    "corpus": "fastapi",
+    "embedding_model": "BAAI/bge-small-en-v1.5",
+    "reranker_model": "BAAI/bge-reranker-base",
+    "llm_model": "",
+    "eval_judge_model": "",
+    "chunking": {
+      "max_tokens": 300,
+      "min_tokens": 80,
+      "overlap_tokens": 60,
+      "prepend_breadcrumb": true
+    },
+    "retrieval": {
+      "dense_k": 40,
+      "sparse_k": 40,
+      "rrf_k": 60,
+      "rerank": true,
+      "rerank_top_n": 30,
+      "final_k": 8
+    },
+    "router_min_confidence": 0.45,
+    "max_context_tokens": 2800
+  },
+  "deterministic": {
+    "n": 8,
+    "retrieval_recall_at_k": 1.0,
+    "reference_hit_rate": 1.0,
+    "router_accuracy": 1.0,
+    "fallback_rate": 0.0,
+    "negative_refusal_rate": 1.0,
+    "by_difficulty": {
+      "single_chunk": {
+        "n": 4,
+        "recall_at_k": 1.0
+      },
+      "multi_chunk": {
+        "n": 3,
+        "recall_at_k": 1.0
+      }
+    }
+  },
+  "ragas": {
+    "faithfulness": 0.5553,
+    "answer_relevancy": 0.8533,
+    "context_precision": 0.8244,
+    "faithfulness_excl_negatives": 0.6347,
+    "context_precision_excl_negatives": 0.9422
+  },
+  "rows": [
+    {
+      "id": "q05",
+      "question": "How do I declare a path parameter that must be an integer greater than 0?",
+      "difficulty": "single_chunk",
+      "split": "holdout",
+      "category_expected": "api_reference",
+      "category_actual": "api_reference",
+      "router_correct": true,
+      "fallback_used": false,
+      "confidence": 1.0,
+      "answer": "You can declare a path parameter that must be an integer greater than 0 using the `gt` validation:\n\n```python\nfrom fastapi import Path\n\n@app.get(\"/items/{item_id}\")\nasync def read_item(item_id: int = Path(..., gt=0)):\n    return {\"item_id\": item_id}\n```\n\nThis is based on [7] Number validations: greater than or equal.",
+      "reference_urls": [
+        "https://fastapi.tiangolo.com/tutorial/path-params-numeric-validations/"
+      ],
+      "retrieved_urls": [
+        "https://fastapi.tiangolo.com/tutorial/path-params/",
+        "https://fastapi.tiangolo.com/tutorial/path-params/",
+        "https://fastapi.tiangolo.com/tutorial/path-params-numeric-validations/",
+        "https://fastapi.tiangolo.com/tutorial/path-params/",
+        "https://fastapi.tiangolo.com/tutorial/path-params/",
+        "https://fastapi.tiangolo.com/tutorial/path-params-numeric-validations/",
+        "https://fastapi.tiangolo.com/tutorial/path-params-numeric-validations/",
+        "https://fastapi.tiangolo.com/tutorial/query-params/"
+      ],
+      "recall_at_k": 1.0,
+      "reference_hit_rank": 3,
+      "is_refusal": false,
+      "timings_ms": {
+        "route": 4831.3,
+        "retrieve": 9775.5,
+        "generate": 3260.0
+      },
+      "faithfulness": 0.3333333333333333,
+      "answer_relevancy": 0.943228443622063,
+      "context_precision": 0.7579365079238757
+    },
+    {
+      "id": "q08",
+      "question": "How do I receive an uploaded file in an endpoint?",
+      "difficulty": "single_chunk",
+      "split": "holdout",
+      "category_expected": "api_reference",
+      "category_actual": "api_reference",
+      "router_correct": true,
+      "fallback_used": false,
+      "confidence": 0.9,
+      "answer": "To receive an uploaded file in an endpoint, you can use the `File` class from `fastapi`. \n\nHere is an example from [7] Tutorial > Request Files > Define `File` Parameters:\n```python\nfrom fastapi import File\n\n@app.post(\"/files/\")\nasync def create_file(file: bytes = File(...)):\n    return {\"file_size\": len(file)}\n```\nYou can also use `UploadFile` from [2] Tutorial > Request Files > File Parameters with `UploadFile` > `UploadFile`:\n```python\nfrom fastapi import UploadFile\n\n@app.post(\"/files/\")\nasync def create_file(file: UploadFile = File(...)):\n    return {\"filename\": file.filename}\n```\nNote that you need to install `python-multipart` to receive uploaded files, as mentioned in [1] Tutorial > Request Files > Import `File` and [3] Tutorial > Request Forms and Files > Import `File` and `Form`.",
+      "reference_urls": [
+        "https://fastapi.tiangolo.com/tutorial/request-files/"
+      ],
+      "retrieved_urls": [
+        "https://fastapi.tiangolo.com/tutorial/request-files/",
+        "https://fastapi.tiangolo.com/tutorial/request-files/",
+        "https://fastapi.tiangolo.com/tutorial/request-forms-and-files/",
+        "https://fastapi.tiangolo.com/tutorial/request-forms-and-files/",
+        "https://fastapi.tiangolo.com/tutorial/request-files/",
+        "https://fastapi.tiangolo.com/advanced/settings/",
+        "https://fastapi.tiangolo.com/tutorial/request-files/",
+        "https://fastapi.tiangolo.com/tutorial/request-files/"
+      ],
+      "recall_at_k": 1.0,
+      "reference_hit_rank": 1,
+      "is_refusal": false,
+      "timings_ms": {
+        "route": 235.8,
+        "retrieve": 3524.3,
+        "generate": 2471.8
+      },
+      "faithfulness": 0.2571428571428571,
+      "answer_relevancy": 0.9146774492344091,
+      "context_precision": 0.9617346938638119
+    },
+    {
+      "id": "q12",
+      "question": "How does FastAPI use Python type hints?",
+      "difficulty": "multi_chunk",
+      "split": "holdout",
+      "category_expected": "conceptual",
+      "category_actual": "conceptual",
+      "router_correct": true,
+      "fallback_used": false,
+      "confidence": 1.0,
+      "answer": "FastAPI uses Python type hints to declare parameters and get editor support and type checks [1]. It also uses these type hints to define requirements, convert data, validate data, and document the API using OpenAPI [1]. By using standard Python types, FastAPI does a lot of the work for you, such as generating automatic errors and providing interactive documentation [1]. \n\nThe type hints are used in a single place, instead of adding more classes or decorators, and are based on the same Python type hints used by other libraries like Pydantic [2, 3]. This allows FastAPI to take advantage of the benefits of type hints, including better editor support and data validation [2, 3].\n\nFastAPI uses the type hints to provide additional metadata about the types, which can be used to provide more information to editors and other tools [6]. This metadata is added using the `Annotated` type, which is part of the standard library in Python 3.9 and can be imported from `typing_extensions` in earlier versions [6].\n\nThe type hints are used in various places in the code, such as function parameters, query parameters, and string validations [4, 8]. For example, the `q` parameter in the query parameters and string validations tutorial is annotated with `Annotated[str | None]` to indicate that it can be a `str` or `None` [8].\n\nOverall, FastAPI uses Python type hints to provide a more intuitive and efficient way of building APIs, with benefits such as better editor support, data validation, and automatic documentation [5].",
+      "reference_urls": [
+        "https://fastapi.tiangolo.com/python-types/"
+      ],
+      "retrieved_urls": [
+        "https://fastapi.tiangolo.com/python-types/",
+        "https://fastapi.tiangolo.com/python-types/",
+        "https://fastapi.tiangolo.com/alternatives/",
+        "https://fastapi.tiangolo.com/python-types/",
+        "https://fastapi.tiangolo.com/",
+        "https://fastapi.tiangolo.com/python-types/",
+        "https://fastapi.tiangolo.com/history-design-future/",
+        "https://fastapi.tiangolo.com/tutorial/query-params-str-validations/"
+      ],
+      "recall_at_k": 1.0,
+      "reference_hit_rank": 1,
+      "is_refusal": false,
+      "timings_ms": {
+        "route": 240.7,
+        "retrieve": 3622.2,
+        "generate": 3624.0
+      },
+      "faithfulness": 1.0,
+      "answer_relevancy": 0.9602443635292217,
+      "context_precision": 0.9999999999875
+    },
+    {
+      "id": "q15",
+      "question": "What is the recommended way to structure a larger FastAPI application?",
+      "difficulty": "multi_chunk",
+      "split": "holdout",
+      "category_expected": "conceptual",
+      "category_actual": "conceptual",
+      "router_correct": true,
+      "fallback_used": false,
+      "confidence": 1.0,
+      "answer": "The recommended way to structure a larger FastAPI application is to use a multi-file structure, where each file or module is responsible for a specific part of the application. This is described in the tutorial as \"Bigger Applications - Multiple Files\" [1]. The file structure would typically have a main `__init__.py` file and other files or modules for specific parts of the application, such as `main.py` [2]. This approach is similar to Flask's Blueprints [1].\n\nIn this structure, each file or module can be developed and tested independently, making it easier to manage and maintain larger applications. The tutorial also mentions that this approach is equivalent to using Flask's Blueprints [1].\n\nIt's worth noting that FastAPI also supports mounting sub-applications, which can be useful for creating independent applications with their own OpenAPI and documentation UIs [3]. However, this is a more advanced feature and not directly related to the recommended way to structure a larger application.",
+      "reference_urls": [
+        "https://fastapi.tiangolo.com/tutorial/bigger-applications/"
+      ],
+      "retrieved_urls": [
+        "https://fastapi.tiangolo.com/tutorial/bigger-applications/",
+        "https://fastapi.tiangolo.com/tutorial/testing/",
+        "https://fastapi.tiangolo.com/advanced/sub-applications/",
+        "https://fastapi.tiangolo.com/deployment/docker/",
+        "https://fastapi.tiangolo.com/deployment/docker/",
+        "https://fastapi.tiangolo.com/tutorial/",
+        "https://fastapi.tiangolo.com/deployment/docker/",
+        "https://fastapi.tiangolo.com/"
+      ],
+      "recall_at_k": 1.0,
+      "reference_hit_rank": 1,
+      "is_refusal": false,
+      "timings_ms": {
+        "route": 256.8,
+        "retrieve": 3392.0,
+        "generate": 2309.3
+      },
+      "faithfulness": 1.0,
+      "answer_relevancy": 0.9999999999999997,
+      "context_precision": 0.9379251700546283
+    },
+    {
+      "id": "q16",
+      "question": "How should I manage application configuration and settings?",
+      "difficulty": "multi_chunk",
+      "split": "holdout",
+      "category_expected": "conceptual",
+      "category_actual": "conceptual",
+      "router_correct": true,
+      "fallback_used": false,
+      "confidence": 1.0,
+      "answer": "You can manage application configuration and settings using Pydantic Settings, which allows you to handle settings or configurations for your application with all the power of Pydantic models [1]. This approach simplifies testing by using a dependency, and you can use `.env` files with it [1]. Additionally, you can use `@lru_cache` to avoid reading the dotenv file again and again for each request, while allowing you to override it during testing [1].\n\nYou can use the `settings` object in your application, which can be created in a dependency [2]. This object can be used to access the application settings, and you can override it during testing by creating a dependency override [7].\n\nIt's common to provide settings in environment variables that are read by the application, especially for sensitive information like secret keys and database credentials [3]. You can also put settings in another module file, such as a `config.py` file, and use it in your application [4].\n\nTo illustrate this, consider a simple example where you have a `config.py` file with settings like `admin_email` and `database_url`. You can then use these settings in your application by requiring the `config` dependency and accessing the `settings` object. During testing, you can override the `config` dependency to provide a different settings object with a different `admin_email` value [7].",
+      "reference_urls": [
+        "https://fastapi.tiangolo.com/advanced/settings/"
+      ],
+      "retrieved_urls": [
+        "https://fastapi.tiangolo.com/advanced/settings/",
+        "https://fastapi.tiangolo.com/advanced/settings/",
+        "https://fastapi.tiangolo.com/advanced/settings/",
+        "https://fastapi.tiangolo.com/advanced/settings/",
+        "https://fastapi.tiangolo.com/tutorial/dependencies/",
+        "https://fastapi.tiangolo.com/deployment/concepts/",
+        "https://fastapi.tiangolo.com/advanced/settings/",
+        "https://fastapi.tiangolo.com/deployment/concepts/"
+      ],
+      "recall_at_k": 1.0,
+      "reference_hit_rank": 1,
+      "is_refusal": false,
+      "timings_ms": {
+        "route": 252.6,
+        "retrieve": 3673.5,
+        "generate": 3064.6
+      },
+      "faithfulness": 0.9444444444444444,
+      "answer_relevancy": 0.9777688139441252,
+      "context_precision": 0.9379251700546283
+    },
+    {
+      "id": "q19",
+      "question": "My dependency with yield isn't running its cleanup code after an exception. Why?",
+      "difficulty": "single_chunk",
+      "split": "holdout",
+      "category_expected": "troubleshooting",
+      "category_actual": "troubleshooting",
+      "router_correct": true,
+      "fallback_used": false,
+      "confidence": 1.0,
+      "answer": "The most likely cause is that you're not re-raising the original exception in the dependency with `yield` after catching it, as described in [6]. \n\nTo fix this, follow these steps:\n\n1. Catch the exception in the dependency with `yield` using `except`.\n2. Re-raise the original exception using `raise` (e.g., `raise SomeException`).\n3. Optionally, you can raise a new exception or an `HTTPException` instead.\n\nThis will ensure that the exception is properly handled and the cleanup code is executed.",
+      "reference_urls": [
+        "https://fastapi.tiangolo.com/tutorial/dependencies/dependencies-with-yield/"
+      ],
+      "retrieved_urls": [
+        "https://fastapi.tiangolo.com/tutorial/dependencies/dependencies-with-yield/",
+        "https://fastapi.tiangolo.com/tutorial/dependencies/dependencies-with-yield/",
+        "https://fastapi.tiangolo.com/tutorial/dependencies/dependencies-with-yield/",
+        "https://fastapi.tiangolo.com/tutorial/dependencies/dependencies-with-yield/",
+        "https://fastapi.tiangolo.com/tutorial/dependencies/dependencies-with-yield/",
+        "https://fastapi.tiangolo.com/tutorial/dependencies/dependencies-with-yield/",
+        "https://fastapi.tiangolo.com/tutorial/dependencies/dependencies-with-yield/",
+        "https://fastapi.tiangolo.com/tutorial/dependencies/dependencies-with-yield/"
+      ],
+      "recall_at_k": 1.0,
+      "reference_hit_rank": 1,
+      "is_refusal": false,
+      "timings_ms": {
+        "route": 237.6,
+        "retrieve": 3993.8,
+        "generate": 1837.5
+      },
+      "faithfulness": 0.6,
+      "answer_relevancy": 0.5488873511160784,
+      "context_precision": 0.9999999999875
+    },
+    {
+      "id": "q21",
+      "question": "Behind my nginx proxy the URLs FastAPI generates have the wrong host and scheme.",
+      "difficulty": "single_chunk",
+      "split": "holdout",
+      "category_expected": "troubleshooting",
+      "category_actual": "troubleshooting",
+      "router_correct": true,
+      "fallback_used": false,
+      "confidence": 1.0,
+      "answer": "The most likely cause is that the `root_path` is not properly configured to handle the proxy's path prefix.\n\nTo fix this, follow these steps:\n\n1. Set the `root_path` parameter in your FastAPI application to the path prefix used by your proxy. For example, if your proxy is serving your FastAPI application at `/api/v1`, set `root_path=\"/api/v1\"` in your FastAPI application.\n2. Update the OpenAPI schema to declare the correct server URL. You can do this by passing a custom list of `servers` to the `FastAPI` constructor, like this: `FastAPI(servers=[{\"url\": \"/api/v1\"}])`.\n3. Make sure your proxy is configured to pass the correct headers to your FastAPI application. This is usually done by setting the `proxy_set_header` directive in your Nginx configuration.\n\nNote: This is based on [1] and [2]. If you're using a proxy with a stripped path prefix, you may need to adjust the `root_path` and OpenAPI schema accordingly, as described in [8].",
+      "reference_urls": [
+        "https://fastapi.tiangolo.com/advanced/behind-a-proxy/"
+      ],
+      "retrieved_urls": [
+        "https://fastapi.tiangolo.com/advanced/behind-a-proxy/",
+        "https://fastapi.tiangolo.com/advanced/behind-a-proxy/",
+        "https://fastapi.tiangolo.com/deployment/docker/",
+        "https://fastapi.tiangolo.com/advanced/behind-a-proxy/",
+        "https://fastapi.tiangolo.com/advanced/behind-a-proxy/",
+        "https://fastapi.tiangolo.com/deployment/manually/",
+        "https://fastapi.tiangolo.com/fastapi-cli/",
+        "https://fastapi.tiangolo.com/advanced/behind-a-proxy/"
+      ],
+      "recall_at_k": 1.0,
+      "reference_hit_rank": 1,
+      "is_refusal": false,
+      "timings_ms": {
+        "route": 243.9,
+        "retrieve": 3754.8,
+        "generate": 2756.2
+      },
+      "faithfulness": 0.3076923076923077,
+      "answer_relevancy": 0.49883556476317575,
+      "context_precision": 0.9999999999875
+    },
+    {
+      "id": "q24",
+      "question": "What is the best ODM to use with FastAPI for MongoDB?",
+      "difficulty": "negative",
+      "split": "holdout",
+      "category_expected": "conceptual",
+      "category_actual": "conceptual",
+      "router_correct": true,
+      "fallback_used": false,
+      "confidence": 0.8,
+      "answer": "The documentation does not cover the best ODM to use with FastAPI for MongoDB.",
+      "reference_urls": [],
+      "retrieved_urls": [
+        "https://fastapi.tiangolo.com/features/",
+        "https://fastapi.tiangolo.com/",
+        "https://fastapi.tiangolo.com/tutorial/first-steps/",
+        "https://fastapi.tiangolo.com/deployment/versions/",
+        "https://fastapi.tiangolo.com/advanced/middleware/",
+        "https://fastapi.tiangolo.com/deployment/manually/",
+        "https://fastapi.tiangolo.com/advanced/dataclasses/",
+        "https://fastapi.tiangolo.com/features/"
+      ],
+      "recall_at_k": null,
+      "reference_hit_rank": null,
+      "is_refusal": true,
+      "timings_ms": {
+        "route": 237.3,
+        "retrieve": 3919.7,
+        "generate": 923.0
+      },
+      "faithfulness": 0.0,
+      "answer_relevancy": 0.9830515075823012,
+      "context_precision": 0.0
+    }
+  ]
+}

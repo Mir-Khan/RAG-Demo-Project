@@ -1,0 +1,631 @@
+{
+  "timestamp": "2026-09-10T06:58:25.991172+00:00",
+  "split": "dev",
+  "n_items": 17,
+  "wall_seconds": 106.1,
+  "config": {
+    "corpus": "fastapi",
+    "embedding_model": "BAAI/bge-small-en-v1.5",
+    "reranker_model": "BAAI/bge-reranker-base",
+    "llm_model": "",
+    "eval_judge_model": "",
+    "chunking": {
+      "max_tokens": 450,
+      "min_tokens": 64,
+      "overlap_tokens": 60,
+      "prepend_breadcrumb": true
+    },
+    "retrieval": {
+      "dense_k": 30,
+      "sparse_k": 30,
+      "rrf_k": 60,
+      "rerank": true,
+      "rerank_top_n": 20,
+      "final_k": 6
+    },
+    "router_min_confidence": 0.45,
+    "max_context_tokens": 2000
+  },
+  "deterministic": {
+    "n": 17,
+    "retrieval_recall_at_k": 0.8,
+    "reference_hit_rate": 0.8667,
+    "router_accuracy": 0.8824,
+    "fallback_rate": 0.0,
+    "negative_refusal_rate": 1.0,
+    "by_difficulty": {
+      "single_chunk": {
+        "n": 8,
+        "recall_at_k": 1.0
+      },
+      "multi_chunk": {
+        "n": 7,
+        "recall_at_k": 0.5714
+      }
+    }
+  },
+  "ragas": {
+    "faithfulness": 0.6216,
+    "answer_relevancy": 0.8508,
+    "context_precision": 0.9038
+  },
+  "rows": [
+    {
+      "id": "q01",
+      "question": "How do I add a maximum length validation to a query parameter?",
+      "difficulty": "single_chunk",
+      "split": "dev",
+      "category_expected": "api_reference",
+      "category_actual": "api_reference",
+      "router_correct": true,
+      "fallback_used": false,
+      "confidence": 1.0,
+      "answer": "You can add a maximum length validation to a query parameter by using the `max_length` parameter inside the `Query` function, like this:\n\n```python\nq: Union[str, None] = Query(default=None, max_length=50)\n```\n\n[2]",
+      "reference_urls": [
+        "https://fastapi.tiangolo.com/tutorial/query-params-str-validations/"
+      ],
+      "retrieved_urls": [
+        "https://fastapi.tiangolo.com/tutorial/query-params-str-validations/",
+        "https://fastapi.tiangolo.com/tutorial/query-params-str-validations/",
+        "https://fastapi.tiangolo.com/tutorial/body-multiple-params/",
+        "https://fastapi.tiangolo.com/tutorial/query-params-str-validations/",
+        "https://fastapi.tiangolo.com/tutorial/path-params-numeric-validations/",
+        "https://fastapi.tiangolo.com/tutorial/query-params-str-validations/"
+      ],
+      "recall_at_k": 1.0,
+      "reference_hit_rank": 1,
+      "is_refusal": false,
+      "timings_ms": {
+        "route": 2416.0,
+        "retrieve": 8869.7,
+        "generate": 3200.4
+      },
+      "faithfulness": null,
+      "answer_relevancy": null,
+      "context_precision": null
+    },
+    {
+      "id": "q02",
+      "question": "What is the difference between Depends and Security in FastAPI?",
+      "difficulty": "multi_chunk",
+      "split": "dev",
+      "category_expected": "api_reference",
+      "category_actual": "conceptual",
+      "router_correct": false,
+      "fallback_used": false,
+      "confidence": 1.0,
+      "answer": "`Depends` and `Security` are both used to declare dependencies in FastAPI, but they serve different purposes. `Depends` is used to declare a dependency that is resolved at runtime, whereas `Security` is used to declare a dependency that is related to security, such as authentication or authorization. When using `Security`, FastAPI will know to use the declared scopes and document the API with OpenAPI [1].\n\n`Security` is a subclass of `Depends` and has an extra parameter `scopes` that is used to declare security scopes [1]. This allows FastAPI to handle security scopes declared at different levels and document the API accordingly.\n\nIn contrast, `Depends` is used to declare a dependency that is resolved at runtime, without any specific security-related functionality [2]. It can be used to declare any kind of dependency, not just security-related ones.\n\nTo illustrate the difference, consider the example in [1], where `Security` is used to declare a dependency that requires the `items` scope, whereas `Depends` would be used to declare a dependency that is resolved at runtime, without any specific security-related functionality.\n\nIn summary, while both `Depends` and `Security` are used to declare dependencies in FastAPI, `Security` is specifically designed for security-related dependencies, and provides additional functionality for handling security scopes and documenting the API with OpenAPI.",
+      "reference_urls": [
+        "https://fastapi.tiangolo.com/tutorial/dependencies/",
+        "https://fastapi.tiangolo.com/advanced/security/oauth2-scopes/"
+      ],
+      "retrieved_urls": [
+        "https://fastapi.tiangolo.com/advanced/security/oauth2-scopes/",
+        "https://fastapi.tiangolo.com/tutorial/security/get-current-user/",
+        "https://fastapi.tiangolo.com/tutorial/security/first-steps/",
+        "https://fastapi.tiangolo.com/tutorial/security/",
+        "https://fastapi.tiangolo.com/advanced/websockets/",
+        "https://fastapi.tiangolo.com/advanced/advanced-dependencies/"
+      ],
+      "recall_at_k": 0.5,
+      "reference_hit_rank": 1,
+      "is_refusal": false,
+      "timings_ms": {
+        "route": 261.5,
+        "retrieve": 3679.3,
+        "generate": 2754.6
+      },
+      "faithfulness": null,
+      "answer_relevancy": null,
+      "context_precision": null
+    },
+    {
+      "id": "q03",
+      "question": "How do I set a custom HTTP status code for a path operation?",
+      "difficulty": "single_chunk",
+      "split": "dev",
+      "category_expected": "api_reference",
+      "category_actual": "api_reference",
+      "router_correct": true,
+      "fallback_used": false,
+      "confidence": 1.0,
+      "answer": "You can set a custom HTTP status code for a path operation by passing the `status_code` parameter to the path operation decorator. \n\nYou can pass directly the `int` code, like `404` [1]. Alternatively, you can use the shortcut constants in `status` [1], or `from starlette import status` [1].\n\nYou can also declare the `status_code` parameter in the path operation decorator, and pass an `IntEnum`, such as `http.HTTPStatus` [2].\n\n```python\nfrom fastapi import FastAPI\nfrom starlette import status\n\napp = FastAPI()\n\n@app.get(\"/custom-status-code\", status_code=status.HTTP_418_IM_A_TEAPOT)\ndef read_custom_status_code():\n    return {\"message\": \"I'm a teapot\"}\n```\n\nYou can also use the `Response` parameter in your path operation function, and set the `status_code` in that temporal response object [3].\n\n```python\nfrom fastapi import Response\n\n@app.get(\"/custom-status-code\")\ndef read_custom_status_code():\n    return Response(content={\"message\": \"I'm a teapot\"}, status_code=status.HTTP_418_IM_A_TEAPOT)\n```\n\nYou can also use the `status_code` parameter combined with the `response_class` parameter, as shown in [4] for `RedirectResponse`.\n\n```python\nfrom fastapi import RedirectResponse\n\n@app.get(\"/custom-status-code\")\ndef read_custom_status_code():\n    return RedirectResponse(url=\"/custom-status-code\", status_code=status.HTTP_307_TEMPORARY_REDIRECT)\n```",
+      "reference_urls": [
+        "https://fastapi.tiangolo.com/tutorial/response-status-code/"
+      ],
+      "retrieved_urls": [
+        "https://fastapi.tiangolo.com/tutorial/path-operation-configuration/",
+        "https://fastapi.tiangolo.com/tutorial/response-status-code/",
+        "https://fastapi.tiangolo.com/advanced/response-change-status-code/",
+        "https://fastapi.tiangolo.com/advanced/custom-response/",
+        "https://fastapi.tiangolo.com/advanced/additional-status-codes/",
+        "https://fastapi.tiangolo.com/how-to/custom-docs-ui-assets/"
+      ],
+      "recall_at_k": 1.0,
+      "reference_hit_rank": 2,
+      "is_refusal": false,
+      "timings_ms": {
+        "route": 179.6,
+        "retrieve": 3095.9,
+        "generate": 3030.0
+      },
+      "faithfulness": null,
+      "answer_relevancy": null,
+      "context_precision": null
+    },
+    {
+      "id": "q04",
+      "question": "What does the response_model_exclude_unset parameter do?",
+      "difficulty": "single_chunk",
+      "split": "dev",
+      "category_expected": "api_reference",
+      "category_actual": "api_reference",
+      "router_correct": true,
+      "fallback_used": false,
+      "confidence": 1.0,
+      "answer": "`response_model_exclude_unset=True` returns only the values explicitly set, excluding default values. [2]",
+      "reference_urls": [
+        "https://fastapi.tiangolo.com/tutorial/response-model/"
+      ],
+      "retrieved_urls": [
+        "https://fastapi.tiangolo.com/tutorial/response-model/",
+        "https://fastapi.tiangolo.com/tutorial/response-model/",
+        "https://fastapi.tiangolo.com/tutorial/response-model/",
+        "https://fastapi.tiangolo.com/tutorial/body-updates/",
+        "https://fastapi.tiangolo.com/advanced/response-change-status-code/",
+        "https://fastapi.tiangolo.com/advanced/response-headers/"
+      ],
+      "recall_at_k": 1.0,
+      "reference_hit_rank": 1,
+      "is_refusal": false,
+      "timings_ms": {
+        "route": 185.0,
+        "retrieve": 3196.5,
+        "generate": 728.4
+      },
+      "faithfulness": null,
+      "answer_relevancy": null,
+      "context_precision": null
+    },
+    {
+      "id": "q06",
+      "question": "Which exception do I raise to return an HTTP error response?",
+      "difficulty": "single_chunk",
+      "split": "dev",
+      "category_expected": "api_reference",
+      "category_actual": "api_reference",
+      "router_correct": true,
+      "fallback_used": false,
+      "confidence": 1.0,
+      "answer": "`HTTPException` [2]",
+      "reference_urls": [
+        "https://fastapi.tiangolo.com/tutorial/handling-errors/"
+      ],
+      "retrieved_urls": [
+        "https://fastapi.tiangolo.com/tutorial/dependencies/dependencies-with-yield/",
+        "https://fastapi.tiangolo.com/tutorial/handling-errors/",
+        "https://fastapi.tiangolo.com/tutorial/handling-errors/",
+        "https://fastapi.tiangolo.com/tutorial/dependencies/dependencies-with-yield/",
+        "https://fastapi.tiangolo.com/tutorial/dependencies/dependencies-with-yield/",
+        "https://fastapi.tiangolo.com/tutorial/handling-errors/"
+      ],
+      "recall_at_k": 1.0,
+      "reference_hit_rank": 2,
+      "is_refusal": false,
+      "timings_ms": {
+        "route": 275.5,
+        "retrieve": 3261.8,
+        "generate": 559.3
+      },
+      "faithfulness": null,
+      "answer_relevancy": null,
+      "context_precision": null
+    },
+    {
+      "id": "q07",
+      "question": "How do I run a function after the response has been sent?",
+      "difficulty": "single_chunk",
+      "split": "dev",
+      "category_expected": "api_reference",
+      "category_actual": "conceptual",
+      "router_correct": false,
+      "fallback_used": false,
+      "confidence": 0.9,
+      "answer": "You can use the `BackgroundTasks` feature in FastAPI to run a function after the response has been sent. This is useful for operations that need to happen after a request, but that the client doesn't really have to be waiting for the operation to complete before receiving the response [2].\n\nYou can declare a parameter of type `BackgroundTasks` at multiple levels, including in a path operation function, in a dependency, in a sub-dependency, etc. [3]. This allows you to run the background task after the response is sent, without blocking the client's request.\n\nFor example, you can use the `BackgroundTasks` to send an email notification after performing an action, or to process data in the background [2].\n\nHere's an example of how you can use `BackgroundTasks` in a path operation function:\n```python\nfrom fastapi import FastAPI, BackgroundTasks\n\napp = FastAPI()\n\n@app.post(\"/\")\nasync def create_item(background_tasks: BackgroundTasks):\n    # Perform some action\n    background_tasks.add_task(send_email_notification)\n    return {\"message\": \"Item created\"}\n```\nIn this example, the `send_email_notification` function will be run in the background after the response is sent.\n\nYou can also use `BackgroundTasks` with dependency injection, as described in [3].\n\nNote that the `BackgroundTasks` feature is available in FastAPI 0.106.0 and later.",
+      "reference_urls": [
+        "https://fastapi.tiangolo.com/tutorial/background-tasks/"
+      ],
+      "retrieved_urls": [
+        "https://fastapi.tiangolo.com/advanced/custom-response/",
+        "https://fastapi.tiangolo.com/tutorial/background-tasks/",
+        "https://fastapi.tiangolo.com/tutorial/background-tasks/",
+        "https://fastapi.tiangolo.com/tutorial/dependencies/dependencies-with-yield/",
+        "https://fastapi.tiangolo.com/tutorial/middleware/",
+        "https://fastapi.tiangolo.com/advanced/response-change-status-code/"
+      ],
+      "recall_at_k": 1.0,
+      "reference_hit_rank": 2,
+      "is_refusal": false,
+      "timings_ms": {
+        "route": 171.6,
+        "retrieve": 2999.3,
+        "generate": 2622.5
+      },
+      "faithfulness": null,
+      "answer_relevancy": 0.8255484700650079,
+      "context_precision": 0.6791666666496875
+    },
+    {
+      "id": "q09",
+      "question": "How does FastAPI's dependency injection system work?",
+      "difficulty": "multi_chunk",
+      "split": "dev",
+      "category_expected": "conceptual",
+      "category_actual": "conceptual",
+      "router_correct": true,
+      "fallback_used": false,
+      "confidence": 1.0,
+      "answer": "FastAPI's dependency injection system allows your code to declare dependencies that are required to work, and the system will take care of providing those dependencies. This is useful for sharing logic, database connections, enforcing security, and more, while minimizing code repetition.\n\nHere's how it works: you declare a dependency in your code, and FastAPI will take care of executing it and \"injecting\" the results into your code. This can be done at the path operation function level, or at multiple levels, including in dependencies and sub-dependencies.\n\nFor example, if you have a path operation function that requires a database connection, you can declare the dependency in your code, and FastAPI will take care of establishing the connection and providing it to your function.\n\nThe system is also compatible with various databases, external packages, APIs, and more, making it a flexible and powerful tool for building applications.\n\n[1, 2, 3, 6]",
+      "reference_urls": [
+        "https://fastapi.tiangolo.com/tutorial/dependencies/"
+      ],
+      "retrieved_urls": [
+        "https://fastapi.tiangolo.com/tutorial/dependencies/",
+        "https://fastapi.tiangolo.com/tutorial/background-tasks/",
+        "https://fastapi.tiangolo.com/tutorial/dependencies/",
+        "https://fastapi.tiangolo.com/tutorial/security/get-current-user/",
+        "https://fastapi.tiangolo.com/tutorial/dependencies/classes-as-dependencies/",
+        "https://fastapi.tiangolo.com/tutorial/dependencies/"
+      ],
+      "recall_at_k": 1.0,
+      "reference_hit_rank": 1,
+      "is_refusal": false,
+      "timings_ms": {
+        "route": 183.4,
+        "retrieve": 3419.3,
+        "generate": 1922.2
+      },
+      "faithfulness": 0.42857142857142855,
+      "answer_relevancy": 1.0,
+      "context_precision": 0.99999999998
+    },
+    {
+      "id": "q10",
+      "question": "Why would I use async def instead of def for a path operation function?",
+      "difficulty": "multi_chunk",
+      "split": "dev",
+      "category_expected": "conceptual",
+      "category_actual": "conceptual",
+      "router_correct": true,
+      "fallback_used": false,
+      "confidence": 1.0,
+      "answer": "You would use `async def` instead of `def` for a path operation function when you need to handle asynchronous operations, such as waiting for a database query to complete or making an external API call. This is because `async def` allows you to write asynchronous code using the `async` and `await` keywords, which can improve the performance and responsiveness of your application.\n\nIn contrast, `def` functions are synchronous and cannot be used to write asynchronous code. However, as noted in [1], [2], [3], and [4], FastAPI can handle both `async def` and `def` functions, so you can choose the one that best fits your needs.\n\nFor example, if you need to fetch data from a database, you might use `async def` to write asynchronous code that waits for the database query to complete:\n```python\nasync def get_data():\n    data = await db.query(\"SELECT * FROM table\")\n    return data\n```\nIn this case, using `async def` allows you to write asynchronous code that can improve the performance of your application.\n\nIt's worth noting that, as mentioned in [5], even if you use `def` functions, FastAPI is still an asynchronous application underneath, and you can use asynchronous code in your tests using the `TestClient`. However, if you need to write asynchronous code in your path operation functions, using `async def` is a good choice.",
+      "reference_urls": [
+        "https://fastapi.tiangolo.com/async/"
+      ],
+      "retrieved_urls": [
+        "https://fastapi.tiangolo.com/tutorial/dependencies/",
+        "https://fastapi.tiangolo.com/tutorial/first-steps/",
+        "https://fastapi.tiangolo.com/advanced/dataclasses/",
+        "https://fastapi.tiangolo.com/tutorial/background-tasks/",
+        "https://fastapi.tiangolo.com/advanced/async-tests/",
+        "https://fastapi.tiangolo.com/tutorial/dependencies/"
+      ],
+      "recall_at_k": 0.0,
+      "reference_hit_rank": null,
+      "is_refusal": false,
+      "timings_ms": {
+        "route": 169.9,
+        "retrieve": 2716.5,
+        "generate": 2678.5
+      },
+      "faithfulness": 0.8333333333333334,
+      "answer_relevancy": 0.9746227316290929,
+      "context_precision": 0.9999999999833333
+    },
+    {
+      "id": "q11",
+      "question": "What is a response model and what does FastAPI do with it?",
+      "difficulty": "multi_chunk",
+      "split": "dev",
+      "category_expected": "conceptual",
+      "category_actual": "conceptual",
+      "router_correct": true,
+      "fallback_used": false,
+      "confidence": 1.0,
+      "answer": "A response model is a Pydantic model that is used to validate, document, and filter the output data of a path operation. FastAPI uses the response model to do the following:\n\n* Validate the output data against the model's schema [2]\n* Document the output data using the model's fields and their descriptions [2]\n* Filter the output data to match the model's type declaration [2, 4]\n* Convert the output data to the model's type declaration [2, 4]\n\nIn other words, the response model is used to ensure that the output data conforms to a specific structure and type, and to provide additional metadata about the output data, such as field descriptions and examples.",
+      "reference_urls": [
+        "https://fastapi.tiangolo.com/tutorial/response-model/"
+      ],
+      "retrieved_urls": [
+        "https://fastapi.tiangolo.com/tutorial/response-model/",
+        "https://fastapi.tiangolo.com/tutorial/response-model/",
+        "https://fastapi.tiangolo.com/advanced/response-change-status-code/",
+        "https://fastapi.tiangolo.com/tutorial/response-model/",
+        "https://fastapi.tiangolo.com/advanced/additional-responses/",
+        "https://fastapi.tiangolo.com/advanced/response-headers/"
+      ],
+      "recall_at_k": 1.0,
+      "reference_hit_rank": 1,
+      "is_refusal": false,
+      "timings_ms": {
+        "route": 173.5,
+        "retrieve": 3190.5,
+        "generate": 1493.5
+      },
+      "faithfulness": 0.5833333333333334,
+      "answer_relevancy": 0.9809668456007042,
+      "context_precision": 0.9999999999833333
+    },
+    {
+      "id": "q13",
+      "question": "What are dependencies with yield used for?",
+      "difficulty": "single_chunk",
+      "split": "dev",
+      "category_expected": "conceptual",
+      "category_actual": "conceptual",
+      "router_correct": true,
+      "fallback_used": false,
+      "confidence": 1.0,
+      "answer": "Dependencies with yield are used for extra steps after finishing, such as cleanup or teardown code, and can be used to create context managers, handle exceptions, and perform background tasks [1, 2, 3, 4, 5]. They allow for more complex and dynamic behavior in FastAPI applications, and can be used to create database sessions, for example [5, 6]. \n\nFor example, you could use a dependency with yield to create a database session and close it after finishing, ensuring that each request has a single session [5]. \n\nIn general, dependencies with yield provide a way to encapsulate complex logic and ensure that it is executed correctly, even in the presence of exceptions or other errors [2, 3].",
+      "reference_urls": [
+        "https://fastapi.tiangolo.com/tutorial/dependencies/dependencies-with-yield/"
+      ],
+      "retrieved_urls": [
+        "https://fastapi.tiangolo.com/tutorial/dependencies/dependencies-with-yield/",
+        "https://fastapi.tiangolo.com/tutorial/dependencies/dependencies-with-yield/",
+        "https://fastapi.tiangolo.com/tutorial/dependencies/dependencies-with-yield/",
+        "https://fastapi.tiangolo.com/tutorial/dependencies/dependencies-with-yield/",
+        "https://fastapi.tiangolo.com/tutorial/dependencies/dependencies-with-yield/",
+        "https://fastapi.tiangolo.com/tutorial/sql-databases/"
+      ],
+      "recall_at_k": 1.0,
+      "reference_hit_rank": 1,
+      "is_refusal": false,
+      "timings_ms": {
+        "route": 192.4,
+        "retrieve": 3355.4,
+        "generate": 1767.6
+      },
+      "faithfulness": 0.5714285714285714,
+      "answer_relevancy": 0.9048901362049571,
+      "context_precision": 0.9999999999833333
+    },
+    {
+      "id": "q14",
+      "question": "How does FastAPI generate the OpenAPI schema and the interactive docs?",
+      "difficulty": "multi_chunk",
+      "split": "dev",
+      "category_expected": "conceptual",
+      "category_actual": "conceptual",
+      "router_correct": true,
+      "fallback_used": false,
+      "confidence": 1.0,
+      "answer": "FastAPI generates the OpenAPI schema by using a utility function `get_openapi()` (1) that receives parameters such as `title`, `version`, `openapi_version`, `summary`, and `description` (1). The schema is then returned by the application's `.openapi()` method (1).\n\nThe interactive docs are generated by including the JSON Schemas of the models in the OpenAPI schema (2), which are then used to display the interactive API docs.\n\nWhen the application is created, a path operation for `/openapi.json` is registered, which returns a JSON response with the OpenAPI schema (3). The schema can be viewed directly at `http://127.0.0.1:8000/openapi.json` (3).\n\nAdditionally, FastAPI can generate an OpenAPI schema with multiple servers, including a default server with the URL for the `root_path` (4), and can be extended to include custom information such as a logo (5).\n\nThe OpenAPI schema for a path operation can be extended using the `openapi_extra` parameter (6).",
+      "reference_urls": [
+        "https://fastapi.tiangolo.com/tutorial/first-steps/",
+        "https://fastapi.tiangolo.com/tutorial/metadata/"
+      ],
+      "retrieved_urls": [
+        "https://fastapi.tiangolo.com/how-to/extending-openapi/",
+        "https://fastapi.tiangolo.com/tutorial/body/",
+        "https://fastapi.tiangolo.com/tutorial/first-steps/",
+        "https://fastapi.tiangolo.com/advanced/behind-a-proxy/",
+        "https://fastapi.tiangolo.com/how-to/extending-openapi/",
+        "https://fastapi.tiangolo.com/advanced/path-operation-advanced-configuration/"
+      ],
+      "recall_at_k": 0.5,
+      "reference_hit_rank": 3,
+      "is_refusal": false,
+      "timings_ms": {
+        "route": 180.2,
+        "retrieve": 3554.3,
+        "generate": 2454.2
+      },
+      "faithfulness": 1.0,
+      "answer_relevancy": 0.968909705596192,
+      "context_precision": 0.9999999999833333
+    },
+    {
+      "id": "q17",
+      "question": "Why am I getting a 422 Unprocessable Entity response?",
+      "difficulty": "multi_chunk",
+      "split": "dev",
+      "category_expected": "troubleshooting",
+      "category_actual": "troubleshooting",
+      "router_correct": true,
+      "fallback_used": false,
+      "confidence": 1.0,
+      "answer": "The most likely cause of a 422 Unprocessable Entity response is that the data you are returning is not serializable as JSON.\n\n[6] states that by default, FastAPI will return the responses using `JSONResponse`. If you return a `Response` directly (or any subclass, like `JSONResponse`), the data won't be automatically converted (even if you declare a `response_model`), and the documentation won't be automatically generated.\n\n[4] mentions that if you are certain that the content that you are returning is serializable with JSON, you can pass it directly to the response class and avoid the extra overhead that FastAPI would have by passing your return content through the `jsonable_encoder` before passing it to the response class.\n\nHowever, if the data is not serializable, you will get a 422 Unprocessable Entity response.\n\nFix:\n\n1. Check if the data you are returning is serializable as JSON.\n2. If it is not, use a response class that can handle non-serializable data, such as `ORJSONResponse` (as mentioned in [4]).\n3. If you are using `ORJSONResponse`, make sure to install and import the `orjson` library.\n4. If you are still getting the 422 response, check your `response_model` and make sure it is correctly defined.\n\nNote: The sources do not explicitly mention the 422 Unprocessable Entity response, but based on the information provided, it is the most likely cause.",
+      "reference_urls": [
+        "https://fastapi.tiangolo.com/tutorial/handling-errors/",
+        "https://fastapi.tiangolo.com/tutorial/body/"
+      ],
+      "retrieved_urls": [
+        "https://fastapi.tiangolo.com/advanced/response-change-status-code/",
+        "https://fastapi.tiangolo.com/advanced/additional-responses/",
+        "https://fastapi.tiangolo.com/advanced/custom-response/",
+        "https://fastapi.tiangolo.com/advanced/custom-response/",
+        "https://fastapi.tiangolo.com/advanced/response-directly/",
+        "https://fastapi.tiangolo.com/advanced/custom-response/"
+      ],
+      "recall_at_k": 0.0,
+      "reference_hit_rank": null,
+      "is_refusal": true,
+      "timings_ms": {
+        "route": 211.6,
+        "retrieve": 3425.8,
+        "generate": 2947.3
+      },
+      "faithfulness": 0.36363636363636365,
+      "answer_relevancy": 0.9717248501884361,
+      "context_precision": 0.9999999999833333
+    },
+    {
+      "id": "q18",
+      "question": "My browser requests to the API are blocked by CORS. What do I need to configure?",
+      "difficulty": "single_chunk",
+      "split": "dev",
+      "category_expected": "troubleshooting",
+      "category_actual": "troubleshooting",
+      "router_correct": true,
+      "fallback_used": false,
+      "confidence": 1.0,
+      "answer": "The most likely cause of the error is that the API is not configured to allow cross-origin requests.\n\nTo fix this, you need to configure the `CORSMiddleware` in your FastAPI application. \n\nHere are the concrete steps:\n\n1. Import `CORSMiddleware` from `fastapi` or `starlette`.\n2. Create a list of allowed origins (as strings) using the `allow_origins` parameter.\n3. Add the `CORSMiddleware` to your FastAPI application using the `app.add_middleware` method.\n\nExample:\n```python\nfrom fastapi import FastAPI\nfrom fastapi.middleware.cors import CORSMiddleware\n\napp = FastAPI()\n\norigins = [\n    \"http://localhost:3000\",\n    \"https://example.org\"\n]\n\napp.add_middleware(\n    CORSMiddleware,\n    allow_origins=origins,\n    allow_credentials=True,\n    allow_methods=[\"*\"],\n    allow_headers=[\"*\"],\n)\n```\nNote: You can also use the `allow_origin_regex` parameter to specify a regex string to match against origins.\n\nSource: [3] Tutorial > CORS (Cross-Origin Resource Sharing) > Use `CORSMiddleware`",
+      "reference_urls": [
+        "https://fastapi.tiangolo.com/tutorial/cors/"
+      ],
+      "retrieved_urls": [
+        "https://fastapi.tiangolo.com/tutorial/cors/",
+        "https://fastapi.tiangolo.com/tutorial/middleware/",
+        "https://fastapi.tiangolo.com/tutorial/cors/",
+        "https://fastapi.tiangolo.com/advanced/response-headers/",
+        "https://fastapi.tiangolo.com/tutorial/cors/",
+        "https://fastapi.tiangolo.com/advanced/using-request-directly/"
+      ],
+      "recall_at_k": 1.0,
+      "reference_hit_rank": 1,
+      "is_refusal": false,
+      "timings_ms": {
+        "route": 195.0,
+        "retrieve": 3945.4,
+        "generate": 2567.2
+      },
+      "faithfulness": 0.8571428571428571,
+      "answer_relevancy": 0.8475904951304428,
+      "context_precision": 0.9999999999833333
+    },
+    {
+      "id": "q20",
+      "question": "FastAPI isn't picking up my environment variables for settings. What's wrong?",
+      "difficulty": "multi_chunk",
+      "split": "dev",
+      "category_expected": "troubleshooting",
+      "category_actual": "troubleshooting",
+      "router_correct": true,
+      "fallback_used": false,
+      "confidence": 1.0,
+      "answer": "The most likely cause is that you haven't set the environment variables before running the server.\n\nTo fix this, follow these steps:\n\n1. Set the environment variables before running the server. For example, if you want to set `ADMIN_EMAIL` and `APP_NAME`, run the following command:\n```\n$ ADMIN_EMAIL=\"deadpool@example.com\" APP_NAME=\"ChimichangApp\" fastapi run main.py\n```\n[2]\n\n2. Make sure you're using the correct syntax for setting environment variables. You can set multiple env vars for a single command by separating them with a space, and put them all before the command. [2]\n\n3. Check that the environment variables are being read correctly by the application. You can do this by printing out the values of the settings in your code. [3]\n\nNote: If you're using a virtual environment, make sure to activate it before running the server. [4]\n\nTriggering error: FastAPI isn't picking up environment variables for settings.",
+      "reference_urls": [
+        "https://fastapi.tiangolo.com/advanced/settings/"
+      ],
+      "retrieved_urls": [
+        "https://fastapi.tiangolo.com/how-to/conditional-openapi/",
+        "https://fastapi.tiangolo.com/advanced/settings/",
+        "https://fastapi.tiangolo.com/advanced/settings/",
+        "https://fastapi.tiangolo.com/tutorial/",
+        "https://fastapi.tiangolo.com/deployment/manually/",
+        "https://fastapi.tiangolo.com/tutorial/sql-databases/"
+      ],
+      "recall_at_k": 1.0,
+      "reference_hit_rank": 2,
+      "is_refusal": false,
+      "timings_ms": {
+        "route": 192.5,
+        "retrieve": 3175.9,
+        "generate": 1983.0
+      },
+      "faithfulness": 0.2,
+      "answer_relevancy": 0.9851851377739987,
+      "context_precision": 0.9999999999833333
+    },
+    {
+      "id": "q22",
+      "question": "My form POST returns 422 'field required' for a field I am definitely sending.",
+      "difficulty": "single_chunk",
+      "split": "dev",
+      "category_expected": "troubleshooting",
+      "category_actual": "troubleshooting",
+      "router_correct": true,
+      "fallback_used": false,
+      "confidence": 0.9,
+      "answer": "The most likely cause is that the field is being sent as JSON instead of form fields.\n\nFix:\n\n1. Check that you are using `Form` explicitly for the field, as mentioned in [1] (Tutorial > Form Data > Define `Form` parameters).\n2. Make sure you are sending the field as form fields, not JSON. You can do this by checking the `Content-Type` header of the request, which should be `application/x-www-form-urlencoded` or `multipart/form-data` (see [4] Tutorial > Form Data > About \"Form Fields\").\n3. If you are using `multipart/form-data`, make sure you have installed `python-multipart` and imported `Form` correctly (see [5] Tutorial > Form Data > Import `Form`).\n\nTrigger for the error: Sending a field as JSON instead of form fields.",
+      "reference_urls": [
+        "https://fastapi.tiangolo.com/tutorial/request-forms/"
+      ],
+      "retrieved_urls": [
+        "https://fastapi.tiangolo.com/tutorial/request-forms/",
+        "https://fastapi.tiangolo.com/tutorial/query-params-str-validations/",
+        "https://fastapi.tiangolo.com/tutorial/query-params/",
+        "https://fastapi.tiangolo.com/tutorial/request-forms/",
+        "https://fastapi.tiangolo.com/tutorial/request-forms/",
+        "https://fastapi.tiangolo.com/tutorial/query-params/"
+      ],
+      "recall_at_k": 1.0,
+      "reference_hit_rank": 1,
+      "is_refusal": false,
+      "timings_ms": {
+        "route": 183.8,
+        "retrieve": 3383.8,
+        "generate": 1842.1
+      },
+      "faithfulness": 1.0,
+      "answer_relevancy": 0.7515117710897523,
+      "context_precision": 0.9999999999833333
+    },
+    {
+      "id": "q23",
+      "question": "How do I configure per-API-key rate limiting in FastAPI?",
+      "difficulty": "negative",
+      "split": "dev",
+      "category_expected": "conceptual",
+      "category_actual": "conceptual",
+      "router_correct": true,
+      "fallback_used": false,
+      "confidence": 1.0,
+      "answer": "Unfortunately, the provided sources do not contain information on how to configure per-API-key rate limiting in FastAPI.\n\nHowever, I can suggest a possible approach based on the provided information. FastAPI has built-in support for rate limiting through the `RateLimit` middleware. To configure rate limiting per-API-key, you would need to create a custom middleware that checks the API key and limits the rate accordingly.\n\nHere's a possible example of how you could implement this:\n\n```python\nfrom fastapi import FastAPI, Depends\nfrom fastapi_limiter import Limiter\nfrom fastapi_limiter.dependencies import *\n\napp = FastAPI()\n\nlimiter = Limiter(\n    key_func=lambda request: request.headers.get(\"X-API-KEY\"),\n    default_limits=[\"200 per day\", \"50 per hour\"]\n)\n\n@app.get(\"/api-key-limited\")\n@limiter.limit(\"10 per minute\")\nasync def read_api_key_limited():\n    return {\"message\": \"Hello, API key limited!\"}\n```\n\nThis example uses the `fastapi_limiter` library to create a custom middleware that checks the `X-API-KEY` header and limits the rate accordingly. The `key_func` argument specifies the function to use to extract the API key from the request, and the `default_limits` argument specifies the default rate limits.\n\nPlease note that this is just a possible example, and you would need to adapt it to your specific use case. Additionally, you would need to install the `fastapi_limiter` library using pip:\n\n```bash\npip install fastapi_limiter\n```\n\nI hope this helps! Let me know if you have any further questions.",
+      "reference_urls": [],
+      "retrieved_urls": [
+        "https://fastapi.tiangolo.com/how-to/configure-swagger-ui/",
+        "https://fastapi.tiangolo.com/tutorial/cors/",
+        "https://fastapi.tiangolo.com/tutorial/first-steps/",
+        "https://fastapi.tiangolo.com/tutorial/bigger-applications/",
+        "https://fastapi.tiangolo.com/how-to/configure-swagger-ui/",
+        "https://fastapi.tiangolo.com/advanced/settings/"
+      ],
+      "recall_at_k": null,
+      "reference_hit_rank": null,
+      "is_refusal": true,
+      "timings_ms": {
+        "route": 181.1,
+        "retrieve": 3479.9,
+        "generate": 3517.9
+      },
+      "faithfulness": 0.0,
+      "answer_relevancy": 0.9990886798345042,
+      "context_precision": 0.9999999999
+    },
+    {
+      "id": "q25",
+      "question": "How do I enable FastAPI's built-in user account database?",
+      "difficulty": "negative",
+      "split": "dev",
+      "category_expected": "conceptual",
+      "category_actual": "conceptual",
+      "router_correct": true,
+      "fallback_used": false,
+      "confidence": 1.0,
+      "answer": "Unfortunately, the provided sources do not contain information on how to enable FastAPI's built-in user account database. \n\nHowever, based on the sources, it seems that FastAPI provides a dependency injection system that allows you to handle security mechanisms at the dependency injection level, using `Depends`. \n\nYou can use any model or data for the security requirements, including a Pydantic model `User`, as shown in [5]. \n\nBut there is no specific information on how to enable a built-in user account database. \n\nIf you want to implement user authentication, you can use OAuth2, as mentioned in [3], or use a library like Pydantic to create a user model and handle authentication and authorization. \n\nBut again, there is no built-in user account database in FastAPI.",
+      "reference_urls": [],
+      "retrieved_urls": [
+        "https://fastapi.tiangolo.com/tutorial/sql-databases/",
+        "https://fastapi.tiangolo.com/tutorial/",
+        "https://fastapi.tiangolo.com/tutorial/security/first-steps/",
+        "https://fastapi.tiangolo.com/tutorial/first-steps/",
+        "https://fastapi.tiangolo.com/tutorial/security/get-current-user/",
+        "https://fastapi.tiangolo.com/tutorial/cors/"
+      ],
+      "recall_at_k": null,
+      "reference_hit_rank": null,
+      "is_refusal": true,
+      "timings_ms": {
+        "route": 241.7,
+        "retrieve": 3689.3,
+        "generate": 1931.6
+      },
+      "faithfulness": 1.0,
+      "answer_relevancy": 0.0,
+      "context_precision": 0.16666666665
+    }
+  ]
+}
