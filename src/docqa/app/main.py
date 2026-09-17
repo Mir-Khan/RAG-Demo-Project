@@ -30,6 +30,7 @@ def _fan_art(name: str) -> str | None:
             return str(path)
     return None
 
+
 # Fly (and most container platforms) capture stdout as the app's logs — this is
 # the only record of what actually happened once a session's browser tab is
 # closed. A silently-wrong answer (no exception, just a bad refusal) is

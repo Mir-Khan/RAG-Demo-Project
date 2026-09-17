@@ -50,6 +50,16 @@ def _latest_baseline() -> Path | None:
     return files[-1] if files else None
 
 
+def _mean_non_negative(rows: list[dict], metric: str) -> float | None:
+    """Mean of `metric` over the non-negative rows only. faithfulness and
+    context_precision are both ill-defined on negatives: a correct "not in the
+    docs" refusal has no supporting context, and there is no relevant chunk to
+    retrieve, so the headline should not be dragged down by the system doing the
+    right thing. See docs/architecture.md §3.10."""
+    xs = [r[metric] for r in rows if r["difficulty"] != "negative" and r.get(metric) is not None]
+    return round(sum(xs) / len(xs), 4) if xs else None
+
+
 def run(
     split: str,
     label: str | None,
@@ -137,21 +147,8 @@ def run(
                 )
                 for row, scores in zip(rows, per_row, strict=True):
                     row.update(scores)
-                # faithfulness and context_precision are both ill-defined on
-                # negatives: a correct "not in the docs" refusal has no supporting
-                # context, and there is no relevant chunk to retrieve. Report the
-                # non-negative subset so the headline isn't dragged by the system
-                # doing the right thing. See docs/architecture.md §3.10.
-                def _mean_non_negative(metric: str) -> float | None:
-                    xs = [
-                        r[metric]
-                        for r in rows
-                        if r["difficulty"] != "negative" and r.get(metric) is not None
-                    ]
-                    return round(sum(xs) / len(xs), 4) if xs else None
-
                 for m in ("faithfulness", "context_precision"):
-                    val = _mean_non_negative(m)
+                    val = _mean_non_negative(rows, m)
                     if val is not None:
                         ragas_agg[f"{m}_excl_negatives"] = val
             except Exception as exc:  # noqa: BLE001

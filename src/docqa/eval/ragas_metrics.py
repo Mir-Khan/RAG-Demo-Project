@@ -164,9 +164,9 @@ def score_with_ragas(
     result = evaluate(dataset=dataset, metrics=metrics)
     df = result.to_pandas()
 
-    per_row: list[dict] = []
-    for _, r in df.iterrows():
-        per_row.append({_FRIENDLY.get(n, n): _to_float(r.get(n)) for n in names})
+    per_row: list[dict] = [
+        {_FRIENDLY.get(n, n): _to_float(r.get(n)) for n in names} for _, r in df.iterrows()
+    ]
 
     agg: dict[str, float] = {}
     for n in names:

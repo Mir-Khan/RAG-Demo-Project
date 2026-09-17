@@ -34,8 +34,6 @@ def parse_route(raw: str, known_ids: set[str], min_confidence: float) -> RouteDe
     except (ValueError, TypeError):
         return RouteDecision(FALLBACK, 0.0, True, raw)
 
-    if category not in known_ids:
-        return RouteDecision(FALLBACK, confidence, True, raw)
-    if confidence < min_confidence:
+    if category not in known_ids or confidence < min_confidence:
         return RouteDecision(FALLBACK, confidence, True, raw)
     return RouteDecision(category, confidence, False, raw)

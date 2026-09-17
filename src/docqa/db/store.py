@@ -3,7 +3,7 @@ choosing pgvector was to lean on SQL, not hide it behind an ORM."""
 
 from __future__ import annotations
 
-from collections.abc import Iterable, Sequence
+from collections.abc import Sequence
 from pathlib import Path
 
 import numpy as np
@@ -190,7 +190,3 @@ def corpus_stats(conn: psycopg.Connection, corpus: str) -> dict:
         "avg_tokens": round(float(row[2]), 1),
         "max_tokens": row[3],
     }
-
-
-def iter_source_ids(chunks: Iterable[Chunk]) -> list[str]:
-    return sorted({c.source_id for c in chunks})

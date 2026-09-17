@@ -37,7 +37,6 @@ from __future__ import annotations
 
 import re
 import uuid
-from collections.abc import Iterable
 from dataclasses import dataclass, field
 from typing import Protocol
 
@@ -172,6 +171,15 @@ def _needs_merge(sec: Section, counter: TokenCounter, min_tokens: int) -> bool:
     )
 
 
+def _deeper_breadcrumb(preferred: list[str], other: list[str]) -> list[str]:
+    """The more specific (deeper) of the two; `preferred` wins a tie."""
+    return preferred if len(preferred) >= len(other) else other
+
+
+def _join_sections(first: Section, second: Section, breadcrumb: list[str]) -> Section:
+    return Section(breadcrumb, min(first.level, second.level), first.text + "\n\n" + second.text)
+
+
 def _merge_small_sections(
     sections: list[Section], counter: TokenCounter, min_tokens: int, max_tokens: int
 ) -> list[Section]:
@@ -184,9 +192,7 @@ def _merge_small_sections(
             and counter.count(merged[-1].text) + tok <= max_tokens
         ):
             prev = merged[-1]
-            # keep the more specific (deeper) breadcrumb
-            deeper = prev.breadcrumb if len(prev.breadcrumb) >= len(sec.breadcrumb) else sec.breadcrumb
-            merged[-1] = Section(deeper, min(prev.level, sec.level), prev.text + "\n\n" + sec.text)
+            merged[-1] = _join_sections(prev, sec, _deeper_breadcrumb(prev.breadcrumb, sec.breadcrumb))
         else:
             merged.append(sec)
 
@@ -194,8 +200,7 @@ def _merge_small_sections(
     if len(merged) >= 2 and _needs_merge(merged[0], counter, min_tokens):
         a, b = merged[0], merged[1]
         if counter.count(a.text) + counter.count(b.text) <= max_tokens:
-            deeper = b.breadcrumb if len(b.breadcrumb) >= len(a.breadcrumb) else a.breadcrumb
-            merged[1] = Section(deeper, min(a.level, b.level), a.text + "\n\n" + b.text)
+            merged[1] = _join_sections(a, b, _deeper_breadcrumb(b.breadcrumb, a.breadcrumb))
             merged.pop(0)
     return merged
 
@@ -310,10 +315,3 @@ def chunk_document(
                 emit(window, sec.breadcrumb)
 
     return chunks
-
-
-def chunk_documents(
-    docs: Iterable[RawDoc], corpus: str, cfg: ChunkingConfig, counter: TokenCounter
-) -> Iterable[Chunk]:
-    for doc in docs:
-        yield from chunk_document(doc, corpus, cfg, counter)

@@ -29,6 +29,9 @@ if TYPE_CHECKING:  # importing Retriever pulls in psycopg; not needed when one i
 
 _CITE_RE = re.compile(r"\[(\d+)\]")
 
+# state key -> the name it is reported under in AnswerResult.timings_ms
+_TIMING_KEYS = {"t_route_ms": "route", "t_retrieve_ms": "retrieve", "t_generate_ms": "generate"}
+
 
 def _fallback_category(settings: Settings) -> RouterCategory:
     return RouterCategory(
@@ -139,11 +142,7 @@ class QAPipeline:
         citations: list[Citation] = final.get("citations", [])
         answer_text = final.get("answer", "")
         used = sorted({int(n) for n in _CITE_RE.findall(answer_text)})
-        timings = {
-            k[2:-3]: final[k]
-            for k in ("t_route_ms", "t_retrieve_ms", "t_generate_ms")
-            if k in final
-        }
+        timings = {name: final[key] for key, name in _TIMING_KEYS.items() if key in final}
         return AnswerResult(
             query=query,
             corpus=self.corpus_cfg.name,

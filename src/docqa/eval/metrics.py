@@ -54,7 +54,7 @@ def router_correct(expected: str, actual: str) -> bool:
     return expected == actual
 
 
-def _mean(xs: list[float]) -> float | None:
+def _mean(xs: list[float | None]) -> float | None:
     xs = [x for x in xs if x is not None]
     return round(statistics.fmean(xs), 4) if xs else None
 

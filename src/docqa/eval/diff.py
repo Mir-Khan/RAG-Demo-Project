@@ -21,12 +21,10 @@ REGRESSION_DELTA = 0.15
 
 def _flat_metrics(result: dict) -> dict[str, float]:
     out: dict[str, float] = {}
-    for k, v in (result.get("deterministic") or {}).items():
-        if isinstance(v, (int, float)):
-            out[k] = float(v)
-    for k, v in (result.get("ragas") or {}).items():
-        if isinstance(v, (int, float)):
-            out[k] = float(v)
+    for section in ("deterministic", "ragas"):
+        for k, v in (result.get(section) or {}).items():
+            if isinstance(v, (int, float)):
+                out[k] = float(v)
     return out
 
 
@@ -51,6 +49,7 @@ def regressions(
 
 def diff(baseline: dict, current: dict) -> None:
     b, c = _flat_metrics(baseline), _flat_metrics(current)
+    br, cr = _rows_by_id(baseline), _rows_by_id(current)
     t = Table(title="aggregate metrics", title_style="bold")
     t.add_column("metric")
     t.add_column("baseline", justify="right")
@@ -70,7 +69,6 @@ def diff(baseline: dict, current: dict) -> None:
     console.print(t)
 
     # per-question judged regressions
-    cr = _rows_by_id(current)
     flagged = regressions(baseline, current)
     if flagged:
         console.print(f"\n[bold red]per-question regressions[/] (drop > {REGRESSION_DELTA}):")
@@ -79,8 +77,6 @@ def diff(baseline: dict, current: dict) -> None:
             console.print(f"  [yellow]{qid}[/] {m}: {bv:.2f} → {cv:.2f}   [dim]{q[:70]}[/]")
     else:
         console.print("\n[green]no per-question faithfulness/context_precision regressions[/]")
-
-    br = _rows_by_id(baseline)
 
     # routing flips
     flips = [

@@ -80,7 +80,12 @@ def main(argv: list[str] | None = None) -> int:
         console.print("\n[bold]rerank movement[/] (fused rank -> final rank):")
         for i, r in enumerate(trace.results, 1):
             delta = pre.get(r.id, 0) - i
-            arrow = f"[green]+{delta}[/]" if delta > 0 else (f"[red]{delta}[/]" if delta < 0 else "·")
+            if delta > 0:
+                arrow = f"[green]+{delta}[/]"
+            elif delta < 0:
+                arrow = f"[red]{delta}[/]"
+            else:
+                arrow = "·"
             console.print(f"  {i:>2}. was #{pre.get(r.id,'?'):<3} {arrow:>10}  {r.breadcrumb}")
 
     console.print(f"\n[dim]timings: {trace.timings_ms}[/]")
